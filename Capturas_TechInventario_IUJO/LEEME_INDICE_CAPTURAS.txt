@@ -1,0 +1,139 @@
+================================================================================
+  TECHINVENTARIO - SISTEMA DE GESTIÓN DE INVENTARIO Y VENTAS (TELECOM)
+  INSTITUTO UNIVERSITARIO DE JESÚS OBRERO (IUJO)
+  ÍNDICE Y DESCRIPCIÓN DE CAPTURAS DE PANTALLA Y CÓDIGO FUENTE
+================================================================================
+
+Este paquete contiene la evidencia visual completa del funcionamiento del sistema
+y fragmentos clave de código fuente para el informe académico y evaluación.
+
+--------------------------------------------------------------------------------
+CARPETA 01: PANTALLAS DEL SISTEMA (01_Pantallas_Sistema/)
+--------------------------------------------------------------------------------
+
+01_Login_Inicio_Sesion.png
+   - Interfaz de inicio de sesión con selector rápido de usuarios predefinidos
+     (Super Usuario, Administrador, Vendedor) y formulario de ingreso manual.
+
+02_Login_Registro_Usuario.png
+   - Pestaña de registro de nuevos usuarios en el sistema. Incluye validaciones
+     estrictas de datos: formato de cédula venezolana (V-/E-), número de teléfono
+     (0412/0414/0424/0416/0426), correo electrónico válido y asignación de roles.
+
+03_Dashboard_Principal.png
+   - Panel Ejecutivo general. Muestra tarjetas de KPIs (Ventas del Día, Teléfonos
+     en Stock, Ganancia Bruta, Tasa Oficial BCV), gráficos rápidos y acceso a acciones.
+
+04_Inventario_Catalogo_General.png
+   - Catálogo de equipos celulares. Despliega columnas con Marca, Modelo, Stock actual,
+     Costo Promedio ($), Último Costo ($), Precio de Venta en Bs., Margen de Ganancia %
+     y botones de gestión por producto.
+
+05_Inventario_Modal_Llegada_Lote_Calculo_Costos.png
+   - Modal de "Entrada / Compra Lote". Permite ingresar el nuevo lote de mercancía,
+     proveedor mayorista y factura, mostrando el cálculo automático de los dos criterios
+     contables: "Costo Promedio Ponderado" vs. "Último Precio de Costo".
+
+06_Inventario_Modal_Alerta_Regla_Reposicion.png
+   - Alerta Crítica de la Regla Fundamental de Negocio: Cuando la mercancía llega a un
+     costo de reposición superior al precio de venta actual, el sistema bloquea pérdidas
+     y exige el reajuste del precio para preservar el margen de ganancia.
+
+07_Inventario_Modal_Ajuste_Stock.png
+   - Modal de Ajuste de Stock (+/-). Permite dar entrada o salida física justificada
+     por conteo, rotura o devolución, generando el registro de auditoría correspondiente.
+
+08_Inventario_Modal_Nuevo_Equipo.png
+   - Modal para agregar un nuevo modelo de teléfono inteligente al inventario, con sus
+     especificaciones técnicas (RAM, Almacenamiento, Cámara, Color) y costos iniciales.
+
+09_Ventas_Modal_Facturacion_Fiscal_IGTF.png
+   - Modal de Registro de Venta. Incluye selección de vendedor, cliente, desglose
+     tributario fiscal venezolano: Base Imponible, 16% IVA y 3% IGTF aplicable a pagos
+     en efectivo en divisas extranjeras (USD).
+
+10_Ventas_Historial_Transacciones.png
+   - Historial consolidado de ventas registradas con código fiscal, fecha/hora,
+     vendedor asignado, cliente, monto en Bs. y USD, método de pago y referencia bancaria.
+
+11_Ventas_Comprobante_Factura_Digital.png
+   - Vista e impresión de Comprobante / Factura Digital de Venta con membrete fiscal,
+     desglose de impuestos, datos del comprador y sello digital de la empresa.
+
+12_Gestion_Personal_Vendedores.png
+   - Módulo de administración de personal de ventas y administradores. Muestra metas
+     mensuales en Bs., porcentajes de comisión y opciones para añadir nuevos vendedores.
+
+13_Analitica_Mercado_Graficos.png
+   - Módulo de Business Intelligence y estadísticas: cuota de mercado por marca
+     (Samsung, Apple, Xiaomi, Motorola, etc.), volumen de ventas y tendencias.
+
+14_Nomina_Comisiones_Vendedores.png
+   - Módulo de Nómina y Comisiones. Realiza la liquidación mensual de comisiones
+     basada en las ventas efectivas registradas en el período.
+
+15_Contabilidad_Estado_Resultados.png
+   - Módulo Contable (IUJO) - Pestaña 1: Estado de Rendimiento Financiero
+     (Ingresos brutos por ventas, Costo de Ventas según valuación, Utilidad Bruta,
+     Gastos Operativos y Utilidad Operativa Neta).
+
+16_Contabilidad_Balance_General.png
+   - Módulo Contable - Pestaña 2: Balance General. Desglose patrimonial:
+     Activo Circulante (Caja, Bancos, Inventario valorizado), Pasivo y Patrimonio Neto.
+
+17_Contabilidad_Gastos_Operativos.png
+   - Módulo Contable - Pestaña 3: Listado de Egresos y Gastos Operativos
+     (Alquiler comercial, Nómina, Electricidad, Servicios de Internet Telecom).
+
+18_Contabilidad_Modal_Registrar_Gasto.png
+   - Formulario para registrar un egreso o gasto operativo con categoría, descripción,
+     monto en USD/Bs. y comprobante de egreso.
+
+19_Contabilidad_Cierre_Caja_Corte_Z.png
+   - Módulo Contable - Pestaña 4: Cierre Diario de Caja y Corte Fiscal Z.
+     Resumen tributario del día con desglose de Base Imponible, Débito Fiscal IVA 16%,
+     recaudación de IGTF 3% y totales recaudados por método de pago.
+
+20_Contabilidad_Rentabilidad_Productos.png
+   - Módulo Contable - Pestaña 5: Rentabilidad Unitaria por Modelo de Teléfono.
+     Muestra el margen de ganancia real obtenido por unidad vendida y total acumulado.
+
+21_Auditoria_Sistema_Confidencial.png
+   - Registro Confidencial de Auditoría (Super Usuario). Trazabilidad total de todas
+     las operaciones: inserciones, modificaciones, ajustes de stock, ventas y login.
+
+22_Configuracion_Tasas_BCV.png
+   - Panel de Configuración del Sistema. Actualización en tiempo real de la tasa oficial
+     del Banco Central de Venezuela (BCV), selector de moneda y respaldo de base de datos.
+
+
+--------------------------------------------------------------------------------
+CARPETA 02: CÓDIGO FUENTE CLAVE (02_Codigo_Fuente_Clave/)
+--------------------------------------------------------------------------------
+
+Regla_de_Negocio_Precio_de_Venta_vs_Costo_de_Reposición.png
+   - Fragmento de `server.cjs` (Líneas 716-739):
+     Implementación de la validación estricta que impide vender mercancía si el precio
+     de venta no cubre el nuevo costo de reposición.
+
+Valuación_Contable_Costo_Promedio_y_Último_Costo.png
+   - Fragmento de `src/context/AppContext.tsx`:
+     Lógica matemática para el cálculo del Costo Promedio Ponderado de inventario
+     frente al método de Último Precio de Costo.
+
+Cálculo_Tributario_Fiscal_Base_Imponible,_IVA_16%_e_IGTF_3%.png
+   - Fragmento de `src/components/sales/SalesRegisterModal.tsx` y `server.cjs`:
+     Desglose tributario venezolano (Base Imponible, 16% IVA y 3% IGTF sobre divisas).
+
+Control_de_Seguridad_Verificación_Anti-Duplicidad_de_Pagos.png
+   - Fragmento de `server.cjs` (Líneas 370-381):
+     Mecanismo de seguridad anti-fraude que previene el uso repetido de referencias bancarias.
+
+Estructura_Relacional_MariaDB_Inventario,_Lotes_y_Auditoría.png
+   - Fragmento de `database.sql`:
+     Definición de tablas relacionales en MySQL/MariaDB con restricciones de integridad.
+
+Automatización_Portable_Ejecución_con_Doble_Clic_en_Windows.png
+   - Fragmento de `ejecutar.bat`:
+     Script de inicio desatendido para ejecutar el sistema con doble clic en Windows.
+================================================================================

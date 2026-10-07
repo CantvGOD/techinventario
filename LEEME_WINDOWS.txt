@@ -1,0 +1,74 @@
+================================================================================
+  TECHINVENTARIO - SISTEMA DE GESTIÓN DE INVENTARIO Y VENTAS (TELECOM)
+  INSTITUTO UNIVERSITARIO DE JESÚS OBRERO (IUJO)
+  GUÍA RÁPIDA DE INSTALACIÓN Y EJECUCIÓN EN WINDOWS (100% FUNCIONAL)
+================================================================================
+
+Este proyecto fue optimizado para ejecutarse en cualquier computadora con Windows
+(incluyendo computadoras completamente limpias sin herramientas previas instaladas).
+
+--------------------------------------------------------------------------------
+1. CÓMO EJECUTAR EL PROGRAMA (UN SOLO CLIC)
+--------------------------------------------------------------------------------
+1. Descomprime la carpeta del proyecto en la computadora de Windows.
+2. Haz doble clic en el archivo:
+   👉 ejecutar.bat
+
+¡Eso es todo! El script se encargará automáticamente de todo:
+- Si la computadora NO tiene Node.js: lo descarga e instala de forma desatendida.
+- Si faltan las librerías: ejecuta `npm install` automáticamente.
+- Si falta compilar: compila el frontend automáticamente.
+- Configura la base de datos (con MySQL si está instalado o con el motor embebido
+  autónomo si no hay MySQL).
+- Inicia el servidor backend y el frontend.
+- Abre tu navegador web automáticamente en: http://localhost:5173/
+
+--------------------------------------------------------------------------------
+2. BASE DE DATOS Y PERSISTENCIA (SOPORTE DUAL)
+--------------------------------------------------------------------------------
+El sistema cuenta con un motor inteligente con soporte dual:
+
+A) CON MYSQL / XAMPP / MARIADB:
+   Si el equipo tiene MySQL (ejemplo: XAMPP en C:\xampp o MySQL Workbench),
+   el script importa automáticamente el archivo `database.sql` con todas las
+   tablas y datos iniciales requeridos para la defensa universitaria.
+
+B) SIN MYSQL (INSTALACIÓN LIMPIA):
+   Si la computadora de tu amigo no tiene MySQL instalado, NO TE PREOCUPES:
+   El backend detecta automáticamente la ausencia de MySQL y activa el
+   MOTOR EMBEBIDO LOCAL (Zero-Config), cargando la totalidad del catálogo,
+   los 14 teléfonos, los usuarios, ventas, tasas BCV y gastos desde:
+   `data/techinventario_database.json`.
+   ¡Todas las operaciones (ventas, compras de lotes, ajustes de stock, auditoría)
+   se guardan y persisten de manera idéntica!
+
+--------------------------------------------------------------------------------
+3. USUARIOS Y CREDENCIALES PREDEFINIDAS PARA LA PRESENTACIÓN
+--------------------------------------------------------------------------------
+Puedes ingresar seleccionando el usuario en el menú desplegable de la pantalla
+de inicio de sesión, o escribiendo:
+
+* Super Usuario (Director General / Jefe):
+  - Correo: jefe@empresa.com
+  - Clave:  123
+  - Acceso total a: Dashboard, Inventario con Márgenes, Compras de Lotes,
+    Ventas, Nómina, Contabilidad (Estados Financieros, Balance, Corte Z),
+    Auditoría Confidencial y Tasas BCV.
+
+* Administrador de Tienda:
+  - Correo: admin@empresa.com
+  - Clave:  123
+  - Acceso a gestión de inventario, ventas, nómina y contabilidad.
+
+* Vendedor (Persona Natural):
+  - Correo: carlos@empresa.com
+  - Clave:  123
+  - Acceso restringido únicamente a facturación y catálogo de inventario.
+
+--------------------------------------------------------------------------------
+4. PUERTOS Y ENLACES LOCALES
+--------------------------------------------------------------------------------
+- Aplicación Web Frontend:  http://localhost:5173/
+- API Backend (Servidor):   http://localhost:3001/
+- Restaurar Base de Datos:  Botón "Restablecer Datos" en Configuración del Sistema.
+================================================================================

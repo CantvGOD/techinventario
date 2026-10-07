@@ -1,0 +1,238 @@
+import React, { useState, useEffect } from 'react';
+import { useApp } from '../../context/AppContext';
+import { validateExchangeRate } from '../../utils/validators';
+
+export const SystemSettings: React.FC = () => {
+  const {
+    exchangeRates,
+    updateExchangeRates,
+    fetchLiveExchangeRates,
+    resetToDefaultData,
+    auditLogs,
+    addToast
+  } = useApp();
+
+  const [ratesForm, setRatesForm] = useState({
+    bcvUSD: exchangeRates.bcvUSD,
+    bcvEUR: exchangeRates.bcvEUR,
+    paraleloUSD: exchangeRates.paraleloUSD
+  });
+
+  useEffect(() => {
+    setRatesForm({
+      bcvUSD: exchangeRates.bcvUSD,
+      bcvEUR: exchangeRates.bcvEUR,
+      paraleloUSD: exchangeRates.paraleloUSD
+    });
+  }, [exchangeRates.bcvUSD, exchangeRates.bcvEUR, exchangeRates.paraleloUSD]);
+
+  const [rateErrors, setRateErrors] = useState<{ [key: string]: string }>({});
+
+  const handleSaveRates = (e: React.FormEvent) => {
+    e.preventDefault();
+    const errors: { [key: string]: string } = {};
+
+    const usdCheck = validateExchangeRate(ratesForm.bcvUSD, 'La tasa BCV Dólar');
+    if (!usdCheck.isValid) errors.bcvUSD = usdCheck.error!;
+
+    const eurCheck = validateExchangeRate(ratesForm.bcvEUR, 'La tasa BCV Euro');
+    if (!eurCheck.isValid) errors.bcvEUR = eurCheck.error!;
+
+    const paraleloCheck = validateExchangeRate(ratesForm.paraleloUSD, 'La tasa Paralelo');
+    if (!paraleloCheck.isValid) errors.paraleloUSD = paraleloCheck.error!;
+
+    setRateErrors(errors);
+
+    if (Object.keys(errors).length > 0) {
+      addToast({
+        type: 'error',
+        title: 'Verificación de tasa fallida',
+        message: 'Las tasas de cambio deben ser valores numéricos positivos mayores a 0.'
+      });
+      return;
+    }
+
+    updateExchangeRates({
+      bcvUSD: Number(ratesForm.bcvUSD),
+      bcvEUR: Number(ratesForm.bcvEUR),
+      paraleloUSD: Number(ratesForm.paraleloUSD)
+    });
+  };
+
+  const handleReset = () => {
+    if (window.confirm('¿Deseas restablecer todos los registros y datos del sistema a los valores iniciales de fábrica? Esta acción quedará registrada en la auditoría.')) {
+      resetToDefaultData();
+    }
+  };
+
+  return (
+    <div className="space-y-4 text-slate-800">
+      
+      {/* Header */}
+      <div className="bg-white p-4 rounded-xl border border-slate-300 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <div>
+          <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
+            ⚙️ Configuración del Sistema y Parámetros
+          </h2>
+          <p className="text-xs text-slate-600">Ajuste de cotizaciones de cambio y registro de auditoría (Super Usuario).</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 text-xs">
+        
+        {/* Exchange Form with Strict Verifications */}
+        <div className="bg-white p-4 rounded-xl border border-slate-300 shadow-sm space-y-3">
+          <div className="flex justify-between items-center border-b border-slate-200 pb-2">
+            <h3 className="font-bold text-sm text-slate-900">💵 Ajuste de Tasas de Cambio Oficiales (Bolívares)</h3>
+            <button
+              onClick={fetchLiveExchangeRates}
+              className="text-blue-600 hover:underline font-bold"
+            >
+              🔄 Sincronizar BCV Oficial
+            </button>
+          </div>
+
+          <form onSubmit={handleSaveRates} className="space-y-3">
+            <div>
+              <label className="block text-slate-700 mb-1 font-semibold">
+                Dólar Oficial BCV (Bs. / USD) <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="0.01"
+                value={ratesForm.bcvUSD}
+                onChange={(e) => {
+                  setRatesForm({ ...ratesForm, bcvUSD: parseFloat(e.target.value) || 0 });
+                  if (rateErrors.bcvUSD) setRateErrors({ ...rateErrors, bcvUSD: '' });
+                }}
+                className={`w-full p-2.5 border rounded-lg font-bold text-slate-900 transition-colors ${
+                  rateErrors.bcvUSD ? 'border-red-500 bg-red-50/50' : 'border-slate-300 focus:border-blue-600'
+                }`}
+              />
+              {rateErrors.bcvUSD && <p className="text-[10px] text-red-600 mt-1 font-semibold">⚠️ {rateErrors.bcvUSD}</p>}
+            </div>
+
+            <div>
+              <label className="block text-slate-700 mb-1 font-semibold">
+                Euro Oficial BCV (Bs. / EUR) <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="0.01"
+                value={ratesForm.bcvEUR}
+                onChange={(e) => {
+                  setRatesForm({ ...ratesForm, bcvEUR: parseFloat(e.target.value) || 0 });
+                  if (rateErrors.bcvEUR) setRateErrors({ ...rateErrors, bcvEUR: '' });
+                }}
+                className={`w-full p-2.5 border rounded-lg font-bold text-slate-900 transition-colors ${
+                  rateErrors.bcvEUR ? 'border-red-500 bg-red-50/50' : 'border-slate-300 focus:border-blue-600'
+                }`}
+              />
+              {rateErrors.bcvEUR && <p className="text-[10px] text-red-600 mt-1 font-semibold">⚠️ {rateErrors.bcvEUR}</p>}
+            </div>
+
+            <div>
+              <label className="block text-slate-700 mb-1 font-semibold">
+                Dólar Paralelo (Bs. / USD) <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="0.01"
+                value={ratesForm.paraleloUSD}
+                onChange={(e) => {
+                  setRatesForm({ ...ratesForm, paraleloUSD: parseFloat(e.target.value) || 0 });
+                  if (rateErrors.paraleloUSD) setRateErrors({ ...rateErrors, paraleloUSD: '' });
+                }}
+                className={`w-full p-2.5 border rounded-lg font-bold text-slate-900 transition-colors ${
+                  rateErrors.paraleloUSD ? 'border-red-500 bg-red-50/50' : 'border-slate-300 focus:border-blue-600'
+                }`}
+              />
+              {rateErrors.paraleloUSD && <p className="text-[10px] text-red-600 mt-1 font-semibold">⚠️ {rateErrors.paraleloUSD}</p>}
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-sm transition-colors text-xs"
+            >
+              Guardar y Aplicar Nuevas Tasas
+            </button>
+          </form>
+        </div>
+
+        {/* Reset System */}
+        <div className="bg-white p-4 rounded-xl border border-slate-300 shadow-sm space-y-3 flex flex-col justify-between">
+          <div>
+            <h3 className="font-bold text-sm border-b border-slate-200 pb-2 text-slate-900">
+              🛠️ Mantenimiento del Sistema
+            </h3>
+            <p className="text-slate-600 mt-2">
+              Permite reiniciar y volver a cargar todos los registros iniciales del sistema para demostraciones.
+            </p>
+
+            <div className="mt-4 p-3.5 bg-amber-50 border border-amber-200 rounded-lg space-y-2">
+              <span className="font-bold text-amber-900">Restablecer Datos de Fábrica</span>
+              <p className="text-slate-600 text-[11px]">
+                Restablece el catálogo de teléfonos y las ventas iniciales del sistema. La acción quedará registrada en auditoría.
+              </p>
+              <button
+                onClick={handleReset}
+                className="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg shadow-sm transition-colors"
+              >
+                Restablecer Datos Iniciales
+              </button>
+            </div>
+          </div>
+
+          <div className="text-[11px] text-slate-500 pt-2 border-t border-slate-100 flex justify-between">
+            <span>TechInventario v2.5.0</span>
+            <span className="text-blue-700 font-semibold">Auditoría Activa ({auditLogs.length} eventos)</span>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Audit Log Preview with link to full view */}
+      <div className="bg-white p-4 rounded-xl border border-slate-300 shadow-sm space-y-3">
+        <div className="flex justify-between items-center border-b border-slate-200 pb-2">
+          <h3 className="font-bold text-sm text-slate-900">
+            🛡️ Vista Rápida de Auditoría (Últimos Movimientos)
+          </h3>
+          <span className="text-xs text-purple-700 font-bold bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
+            Solo Super Usuario
+          </span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr className="bg-slate-100 border-b border-slate-300 font-bold text-slate-700">
+                <th className="p-2.5">Fecha y Hora</th>
+                <th className="p-2.5">Usuario</th>
+                <th className="p-2.5">Rol</th>
+                <th className="p-2.5">Acción</th>
+                <th className="p-2.5">Detalles</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200 font-medium">
+              {auditLogs.slice(0, 6).map((log) => (
+                <tr key={log.id} className="hover:bg-slate-50">
+                  <td className="p-2.5 text-slate-500 whitespace-nowrap text-[11px]">
+                    {new Date(log.timestamp).toLocaleString('es-VE')}
+                  </td>
+                  <td className="p-2.5 font-bold text-slate-900">{log.user}</td>
+                  <td className="p-2.5 text-blue-700 capitalize font-semibold">{log.role}</td>
+                  <td className="p-2.5 font-bold text-slate-800">{log.action}</td>
+                  <td className="p-2.5 text-slate-600 max-w-sm truncate">{log.details}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  );
+};

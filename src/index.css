@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #f1f5f9;
+    color: #1e293b;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+}
+
+/* Simple clean card styling */
+.simple-card {
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+}
+
+.dark .simple-card {
+  background-color: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
