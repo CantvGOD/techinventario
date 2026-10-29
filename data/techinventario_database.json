@@ -307,6 +307,28 @@
       "stock_minimo": 2,
       "gama": "Gama Alta",
       "ano_lanzamiento": 2023
+    },
+    {
+      "id": 15,
+      "codigo_ph": "PH-096",
+      "marca": "Xiaomi",
+      "modelo": "Chinodoble Pro",
+      "ram": "32 GB",
+      "almacenamiento": "1 TB",
+      "color": "Fucsia",
+      "camara": "50 MP",
+      "pantalla": "6.5\" AMOLED",
+      "precio_bs": 300000,
+      "costo_bs": 170892,
+      "costo_usd": 200,
+      "ultimo_costo_usd": 200,
+      "costo_promedio_usd": 200,
+      "metodo_costeo": "promedio_ponderado",
+      "margen_ganancia": 75.55,
+      "stock": 3,
+      "stock_minimo": 1,
+      "gama": "Gama Alta",
+      "ano_lanzamiento": 2026
     }
   ],
   "usuarios": [
@@ -531,6 +553,48 @@
       "cliente_nombre": "Test Client",
       "cliente_cedula": "V-12345678",
       "notas": null
+    },
+    {
+      "id": 7,
+      "codigo_venta": "VEN-2026-907",
+      "fecha": "2026-10-08 15:03:17",
+      "vendedor_id": "4",
+      "telefono_id": "15",
+      "cantidad": 1,
+      "precio_unitario_bs": 300000,
+      "subtotal_bs": 258620.69,
+      "base_imponible_bs": 41379.31,
+      "iva_bs": 0,
+      "igtf_bs": 300000,
+      "total_bs": 351.1,
+      "total_usd": 307.99,
+      "tasa_cambio_usada": 170892,
+      "metodo_pago": 854.46,
+      "referencia_pago": "Zelle",
+      "cliente_nombre": "3254",
+      "cliente_cedula": "Luis Lucena",
+      "notas": "V-31803299"
+    },
+    {
+      "id": 8,
+      "codigo_venta": "VEN-2026-183",
+      "fecha": "2026-10-08 15:05:00",
+      "vendedor_id": "8",
+      "telefono_id": "15",
+      "cantidad": 1,
+      "precio_unitario_bs": 300000,
+      "subtotal_bs": 258620.69,
+      "base_imponible_bs": 41379.31,
+      "iva_bs": 9000,
+      "igtf_bs": 309000,
+      "total_bs": 361.63,
+      "total_usd": 317.23,
+      "tasa_cambio_usada": 170892,
+      "metodo_pago": 854.46,
+      "referencia_pago": "Efectivo Divisas (USD)",
+      "cliente_nombre": null,
+      "cliente_cedula": "Erika Ramirez",
+      "notas": "V-32809359"
     }
   ],
   "compras_inventario": [
@@ -613,6 +677,25 @@
       "precio_venta_anterior_bs": "469953.00",
       "precio_venta_nuevo_bs": "469953.00",
       "notas": "Prueba de lote de reposición"
+    },
+    {
+      "id": 5,
+      "fecha": "2026-10-08 15:05:31",
+      "telefono_id": "CMP-2026-493",
+      "proveedor": "15",
+      "numero_factura": "Distribuidora Mayorista Caracas C.A.",
+      "cantidad": "FACT-2026-6580",
+      "costo_unitario_usd": 3,
+      "costo_unitario_bs": 200,
+      "total_compra_usd": 170892,
+      "total_compra_bs": 600,
+      "tasa_cambio_usada": 512676,
+      "metodo_costeo_aplicado": 854.46,
+      "costo_anterior_usd": "promedio_ponderado",
+      "costo_nuevo_usd": 200,
+      "precio_venta_anterior_bs": 200,
+      "precio_venta_nuevo_bs": 300000,
+      "notas": 300000
     }
   ],
   "gastos_operativos": [
@@ -901,6 +984,62 @@
       "rol": "super_user",
       "accion": "Inicio de Sesión Exitoso",
       "detalles": "El usuario Carlos Mendoza (jefe@empresa.com) ha iniciado sesión con rol de super_user"
+    },
+    {
+      "id": 9,
+      "fecha": "2026-10-08 14:56:32",
+      "usuario": "Carlos Mendoza",
+      "rol": "super_user",
+      "accion": "Cierre de Sesión",
+      "detalles": "El usuario Carlos Mendoza ha cerrado su sesión en el sistema"
+    },
+    {
+      "id": 10,
+      "fecha": "2026-10-08 14:56:55",
+      "usuario": "Carlos Mendoza",
+      "rol": "super_user",
+      "accion": "Inicio de Sesión Exitoso",
+      "detalles": "El usuario Carlos Mendoza (jefe@empresa.com) ha iniciado sesión con rol de super_user"
+    },
+    {
+      "id": 11,
+      "fecha": "2026-10-08 15:01:17",
+      "usuario": "Carlos Mendoza",
+      "rol": "super_user",
+      "accion": "Ingreso de Teléfono a Inventario",
+      "detalles": "Nuevo equipo incorporado al inventario: \"Xiaomi Chinodoble Pro\" (Cód: PH-096). Stock inicial: 2 unidades (Stock mínimo: 1). Precio: Bs. 300.000. Costo: $200 USD (Bs. 170.892). Margen: 75.55%."
+    },
+    {
+      "id": 12,
+      "fecha": "2026-10-08 15:03:17",
+      "usuario": "Juan Pérez",
+      "rol": "vendedor",
+      "accion": "Venta y Salida de Stock",
+      "detalles": "Venta confirmada y salida de stock: Se vendieron 1 unidades de \"Xiaomi Chinodoble Pro\" (Cód: PH-096) al cliente Luis Lucena (C.I./RIF: V-31803299) por Bs. 300.000 ($351.1 USD) vía Zelle | Ref: 3254. Stock previo: 1 unids ➔ Stock resultante disponible: 0 unids. Transacción: VEN-2026-907."
+    },
+    {
+      "id": 13,
+      "fecha": "2026-10-08 15:05:00",
+      "usuario": "Sofia Castillo",
+      "rol": "vendedor",
+      "accion": "Venta y Salida de Stock",
+      "detalles": "Venta confirmada y salida de stock: Se vendieron 1 unidades de \"Xiaomi Chinodoble Pro\" (Cód: PH-096) al cliente Erika Ramirez (C.I./RIF: V-32809359) por Bs. 309.000 ($361.63 USD) vía Efectivo Divisas (USD) (Incluye IGTF 3%: Bs. 9.000). Stock previo: 0 unids ➔ Stock resultante disponible: -1 unids. Transacción: VEN-2026-183."
+    },
+    {
+      "id": 14,
+      "fecha": "2026-10-08 15:05:31",
+      "usuario": "Carlos Mendoza",
+      "rol": "super_user",
+      "accion": "Recepción de Mercancía y Costeo",
+      "detalles": "Entrada de mercancía / Compra (CMP-2026-493): 3x \"Xiaomi Chinodoble Pro\" a $200 USD c/u (Total: $600 USD / Bs. 512.676). Proveedor: Distribuidora Mayorista Caracas C.A. (Fact: FACT-2026-6580). Método: promedio_ponderado. Costo resultante: $200 USD (Bs. 170.892) | Precio de venta: Bs. 300.000. Stock: 0 ➔ 3 unids."
+    },
+    {
+      "id": 15,
+      "fecha": "2026-10-08 15:05:52",
+      "usuario": "Carlos Mendoza",
+      "rol": "super_user",
+      "accion": "Ingreso de Stock a Inventario",
+      "detalles": "Ingreso de unidades a inventario: Se sumaron 3 unidades a \"Xiaomi Chinodoble Pro\" (Cód: PH-096). Justificación: Recepción de nuevo lote de importación. Stock anterior: 0 unids ➔ Stock resultante disponible: 3 unids (+3 unids incorporadas)."
     }
   ]
 }

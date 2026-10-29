@@ -14,8 +14,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNewSale }) => {
     setActiveRole,
     exchangeRates,
     fetchLiveExchangeRates,
-    updateExchangeRates
+    updateExchangeRates,
+    approvals
   } = useApp();
+
+  const pendingApprovalsCount = approvals.filter(a => a.status === 'pendiente').length;
 
   const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setActiveRole(e.target.value as UserRole);
@@ -65,6 +68,13 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNewSale }) => {
         {/* User Info & Actions */}
         <div className="flex flex-wrap items-center gap-2.5">
           
+          {(activeRole === 'admin' || activeRole === 'super_user') && pendingApprovalsCount > 0 && (
+            <div className="flex items-center gap-1.5 bg-amber-500/20 border border-amber-500/40 text-amber-300 px-2.5 py-1.5 rounded-lg text-xs font-bold animate-pulse">
+              <span>🔔</span>
+              <span>{pendingApprovalsCount} {pendingApprovalsCount === 1 ? 'decisión pendiente' : 'decisiones pendientes'}</span>
+            </div>
+          )}
+
           <button
             onClick={onOpenNewSale}
             className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-lg shadow-sm transition-colors"

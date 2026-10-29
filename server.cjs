@@ -742,7 +742,7 @@ app.post('/api/purchases', async (req, res) => {
     );
 
     // Insertar registro en compras_inventario
-    const code = `CMP-2026-${Math.floor(100 + Math.random() * 900)}`;
+    const code = `CMP-${Date.now().toString().slice(-6)}-${Math.floor(100 + Math.random() * 900)}`;
     await pool.query(
       `INSERT INTO compras_inventario
        (codigo_compra, fecha, telefono_id, proveedor, numero_factura, cantidad, costo_unitario_usd, costo_unitario_bs, total_compra_usd, total_compra_bs, tasa_cambio_usada, metodo_costeo_aplicado, costo_anterior_usd, costo_nuevo_usd, precio_venta_anterior_bs, precio_venta_nuevo_bs, notas)
@@ -955,6 +955,124 @@ app.post('/api/audit', async (req, res) => {
   }
 });
 
+// 14.5 GET /api/approvals - Listar solicitudes de toma de decisiones gerenciales
+app.get('/api/approvals', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM solicitudes_aprobacion ORDER BY fecha_solicitud DESC, id DESC');
+    const approvals = rows.map(r => ({
+      id: `appr-${r.id}`,
+      rawId: r.id,
+      code: r.codigo,
+      type: r.tipo,
+      requesterName: r.solicitante_nombre,
+      requesterRole: r.solicitante_rol,
+      phoneId: r.equipo_id,
+      phoneName: r.equipo_nombre,
+      description: r.descripcion,
+      payload: typeof r.datos_solicitud === 'string' ? JSON.parse(r.datos_solicitud) : r.datos_solicitud,
+      status: r.estado,
+      reviewedBy: r.revisado_por,
+      date: r.fecha_solicitud,
+      resolutionDate: r.fecha_resolucion,
+      rejectionReason: r.motivo_rechazo
+    }));
+    res.json(approvals);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 14.6 POST /api/approvals - Crear nueva solicitud de aprobación gerencial
+app.post('/api/approvals', async (req, res) => {
+  try {
+    const { type, requesterName, requesterRole, phoneId, phoneName, description, payload } = req.body;
+    const code = `SOL-${Date.now().toString().slice(-5)}-${Math.floor(10 + Math.random() * 90)}`;
+    const [result] = await pool.query(
+      `INSERT INTO solicitudes_aprobacion
+       (codigo, tipo, solicitante_nombre, solicitante_rol, equipo_id, equipo_nombre, descripcion, datos_solicitud, estado, fecha_solicitud)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pendiente', NOW())`,
+      [code, type, requesterName || 'Personal', requesterRole || 'vendedor', phoneId || null, phoneName || 'General', description, JSON.stringify(payload || {})]
+    );
+
+    await logToAudit(
+      requesterName || 'Personal',
+      requesterRole || 'vendedor',
+      'Solicitud de Aprobación Gerencial Creada',
+      `Solicitud #${code} (${type}) enviada a Gerencia: ${description}`
+    );
+
+    res.json({ success: true, id: `appr-${result.insertId}`, code });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 14.7 POST /api/approvals/:id/resolve - Resolver solicitud gerencial (Aprobar o Rechazar)
+app.post('/api/approvals/:id/resolve', async (req, res) => {
+  try {
+    const rawId = String(req.params.id).replace(/^appr-/, '');
+    const { action, reviewerName, reviewerRole, reason } = req.body; // action: 'approve' | 'reject'
+
+    const [[appr]] = await pool.query('SELECT * FROM solicitudes_aprobacion WHERE id=?', [rawId]);
+    if (!appr) {
+      return res.status(404).json({ error: 'Solicitud no encontrada' });
+    }
+
+    if (appr.estado !== 'pendiente') {
+      return res.status(400).json({ error: 'Esta solicitud ya fue resuelta previamente.' });
+    }
+
+    const payload = typeof appr.datos_solicitud === 'string' ? JSON.parse(appr.datos_solicitud) : appr.datos_solicitud;
+    const reviewer = reviewerName || 'Administrador Gerencial';
+    const role = reviewerRole || 'admin';
+
+    if (action === 'approve') {
+      // Ejecutar la acción aprobada
+      if (appr.tipo === 'CAMBIO_PRECIO' && payload.phoneId && payload.newPriceBs) {
+        const rawPhoneId = String(payload.phoneId).replace(/^ph-/, '');
+        await pool.query('UPDATE telefonos SET precio_bs=? WHERE id=?', [payload.newPriceBs, rawPhoneId]);
+      } else if (appr.tipo === 'SALIDA_STOCK' && payload.phoneId && payload.quantity) {
+        const rawPhoneId = String(payload.phoneId).replace(/^ph-/, '');
+        await pool.query('UPDATE telefonos SET stock = GREATEST(0, stock - ?) WHERE id=?', [parseInt(payload.quantity, 10), rawPhoneId]);
+      } else if (appr.tipo === 'ELIMINAR_EQUIPO' && payload.phoneId) {
+        const rawPhoneId = String(payload.phoneId).replace(/^ph-/, '');
+        await pool.query('DELETE FROM telefonos WHERE id=?', [rawPhoneId]);
+      }
+
+      await pool.query(
+        'UPDATE solicitudes_aprobacion SET estado="aprobada", revisado_por=?, fecha_resolucion=NOW() WHERE id=?',
+        [reviewer, rawId]
+      );
+
+      await logToAudit(
+        reviewer,
+        role,
+        'Aprobación Gerencial Concedida',
+        `Gerencia APROBÓ la solicitud #${appr.codigo} (${appr.tipo}) enviada por ${appr.solicitante_nombre}. Efecto: ${appr.descripcion}`
+      );
+
+      res.json({ success: true, status: 'aprobada' });
+    } else {
+      // Rechazar solicitud
+      await pool.query(
+        'UPDATE solicitudes_aprobacion SET estado="rechazada", revisado_por=?, fecha_resolucion=NOW(), motivo_rechazo=? WHERE id=?',
+        [reviewer, reason || 'Rechazado por política gerencial', rawId]
+      );
+
+      await logToAudit(
+        reviewer,
+        role,
+        'Solicitud Gerencial Rechazada',
+        `Gerencia RECHAZÓ la solicitud #${appr.codigo} (${appr.tipo}) enviada por ${appr.solicitante_nombre}. Motivo: ${reason || 'Rechazado por criterio gerencial'}`
+      );
+
+      res.json({ success: true, status: 'rechazada' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // 15. POST /api/reset - Re-import database.sql / reload backup
 app.post('/api/reset', async (req, res) => {
   try {
@@ -987,5 +1105,5 @@ if (fs.existsSync(distPath)) {
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor API Backend ejecutándose en http://localhost:${PORT}`);
+  console.log(`🚀 Servidor Backend + Frontend ejecutándose en http://localhost:${PORT}`);
 });

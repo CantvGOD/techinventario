@@ -79,6 +79,24 @@ export interface DailyCashCloseReport {
   expenses: OperatingExpense[];
 }
 
+export interface ApprovalRequest {
+  id: string;
+  rawId?: number;
+  code: string;
+  type: 'CAMBIO_PRECIO' | 'SALIDA_STOCK' | 'ENTRADA_LOTE' | 'ELIMINAR_EQUIPO' | 'DESCUENTO_ESPECIAL';
+  requesterName: string;
+  requesterRole: UserRole;
+  phoneId?: string;
+  phoneName: string;
+  description: string;
+  payload: any;
+  status: 'pendiente' | 'aprobada' | 'rechazada';
+  reviewedBy?: string;
+  date: string;
+  resolutionDate?: string;
+  rejectionReason?: string;
+}
+
 interface AppContextType {
   currentUser: User | null;
   activeRole: UserRole;
@@ -92,6 +110,7 @@ interface AppContextType {
   payrolls: VendorPayroll[];
   marketStats: MarketStatItem[];
   auditLogs: AuditLog[];
+  approvals: ApprovalRequest[];
   toasts: ToastMessage[];
   darkMode: boolean;
   setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
@@ -146,6 +165,18 @@ interface AppContextType {
   removeToast: (id: string) => void;
   getActiveExchangeRate: () => number;
   refreshFromMySQL: () => Promise<void>;
+  requestApproval: (
+    type: ApprovalRequest['type'],
+    phoneId: string | undefined,
+    phoneName: string,
+    description: string,
+    payload: any
+  ) => Promise<boolean>;
+  resolveApproval: (
+    id: string,
+    action: 'approve' | 'reject',
+    reason?: string
+  ) => Promise<boolean>;
   logAuditAction: (
     user: string,
     role: UserRole,
@@ -457,6 +488,35 @@ const DEFAULT_MARKET_STATS: MarketStatItem[] = [
   { id: 'm-5', brand: 'Google', model: 'Pixel 8 Pro', marketSharePercentage: 10.3, salesVolumeUnits: 610, avgPriceUSD: 999, trend: 'down', isStoreStocked: true }
 ];
 
+const DEFAULT_APPROVALS: ApprovalRequest[] = [
+  {
+    id: 'appr-1',
+    code: 'SOL-2026-101',
+    type: 'CAMBIO_PRECIO',
+    requesterName: 'Laura Rodríguez',
+    requesterRole: 'vendedor',
+    phoneId: 'ph-1',
+    phoneName: 'Samsung Galaxy S24 Ultra 5G',
+    description: 'Solicitud de descuento comercial autorizado a cliente corporativo: Ajustar precio unitario de venta de Bs. 1.110.798 a Bs. 1.050.000.',
+    payload: { phoneId: 'ph-1', newPriceBs: 1050000 },
+    status: 'pendiente',
+    date: '2026-10-28 14:30:00'
+  },
+  {
+    id: 'appr-2',
+    code: 'SOL-2026-102',
+    type: 'SALIDA_STOCK',
+    requesterName: 'Carlos Mendoza',
+    requesterRole: 'vendedor',
+    phoneId: 'ph-4',
+    phoneName: 'Motorola Edge 50 Pro',
+    description: 'Baja y desincorporación física de 1 unidad por avería y rotura de cristal en módulo de demostración.',
+    payload: { phoneId: 'ph-4', quantity: 1, reason: 'Daño en exhibición' },
+    status: 'pendiente',
+    date: '2026-10-29 09:15:00'
+  }
+];
+
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -472,6 +532,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [expenses, setExpenses] = useState<OperatingExpense[]>(DEFAULT_EXPENSES);
   const [payrolls, setPayrolls] = useState<VendorPayroll[]>([]);
   const [marketStats] = useState<MarketStatItem[]>(DEFAULT_MARKET_STATS);
+  const [approvals, setApprovals] = useState<ApprovalRequest[]>(DEFAULT_APPROVALS);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([
     {
       id: 'log-init-1',
@@ -518,7 +579,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const refreshFromMySQL = async () => {
     try {
-      const [resPhones, resUsers, resSales, resPayroll, resRates, resAudit, resPurchases, resExpenses] = await Promise.all([
+      const [resPhones, resUsers, resSales, resPayroll, resRates, resAudit, resPurchases, resExpenses, resApprovals] = await Promise.all([
         fetch(`${API_BASE}/phones`),
         fetch(`${API_BASE}/users`),
         fetch(`${API_BASE}/sales`),
@@ -526,7 +587,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         fetch(`${API_BASE}/rates`),
         fetch(`${API_BASE}/audit`),
         fetch(`${API_BASE}/purchases`),
-        fetch(`${API_BASE}/expenses`)
+        fetch(`${API_BASE}/expenses`),
+        fetch(`${API_BASE}/approvals`)
       ]);
 
       if (resPhones.ok) setPhones(await resPhones.json());
@@ -547,6 +609,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const fetchedLogs = await resAudit.json();
         if (Array.isArray(fetchedLogs) && fetchedLogs.length > 0) {
           setAuditLogs(fetchedLogs);
+        }
+      }
+      if (resApprovals && resApprovals.ok) {
+        const fetchedApprovals = await resApprovals.json();
+        if (Array.isArray(fetchedApprovals) && fetchedApprovals.length > 0) {
+          setApprovals(fetchedApprovals);
         }
       }
     } catch (err) {
@@ -1546,6 +1614,155 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     );
   };
 
+  const requestApproval = async (
+    type: ApprovalRequest['type'],
+    phoneId: string | undefined,
+    phoneName: string,
+    description: string,
+    payload: any
+  ): Promise<boolean> => {
+    const code = `SOL-${Date.now().toString().slice(-5)}-${Math.floor(10 + Math.random() * 90)}`;
+    const newReq: ApprovalRequest = {
+      id: 'appr-' + Math.random().toString(36).substring(2, 9),
+      code,
+      type,
+      requesterName: currentUser?.name || 'Vendedor Mostrador',
+      requesterRole: activeRole,
+      phoneId,
+      phoneName,
+      description,
+      payload,
+      status: 'pendiente',
+      date: new Date().toISOString().replace('T', ' ').substring(0, 19)
+    };
+
+    try {
+      const res = await fetch(`${API_BASE}/approvals`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type,
+          requesterName: currentUser?.name || 'Vendedor Mostrador',
+          requesterRole: activeRole,
+          phoneId,
+          phoneName,
+          description,
+          payload
+        })
+      });
+      if (res.ok) {
+        await refreshFromMySQL();
+        addToast({
+          type: 'info',
+          title: '📋 Solicitud Enviada a Gerencia',
+          message: `Solicitud #${code} enviada. Debe ser aprobada por el Administrador antes de aplicarse.`
+        });
+        return true;
+      }
+    } catch {}
+
+    setApprovals((prev) => [newReq, ...prev]);
+    logAuditAction(
+      currentUser?.name || 'Vendedor Mostrador',
+      activeRole,
+      'Solicitud de Aprobación Gerencial Creada',
+      `Solicitud #${code} (${type}): ${description}`,
+      'system',
+      'info'
+    );
+    addToast({
+      type: 'info',
+      title: '📋 Solicitud Enviada a Gerencia (Local)',
+      message: `Solicitud #${code} registrada para revisión y aprobación gerencial.`
+    });
+    return true;
+  };
+
+  const resolveApproval = async (
+    id: string,
+    action: 'approve' | 'reject',
+    reason?: string
+  ): Promise<boolean> => {
+    const reviewer = currentUser?.name || 'Administrador Gerencial';
+    const role = activeRole;
+
+    try {
+      const res = await fetch(`${API_BASE}/approvals/${id}/resolve`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action,
+          reviewerName: reviewer,
+          reviewerRole: role,
+          reason
+        })
+      });
+      if (res.ok) {
+        await refreshFromMySQL();
+        addToast({
+          type: action === 'approve' ? 'success' : 'warning',
+          title: action === 'approve' ? '✅ Decisión Aprobada' : '❌ Solicitud Rechazada',
+          message: action === 'approve'
+            ? 'El cambio gerencial fue aprobado y ejecutado exitosamente en el sistema.'
+            : 'La solicitud ha sido rechazada por la administración.'
+        });
+        return true;
+      }
+    } catch {}
+
+    // Fallback local
+    const targetAppr = approvals.find((a) => a.id === id);
+    if (targetAppr && action === 'approve') {
+      const payload = targetAppr.payload;
+      if (targetAppr.type === 'CAMBIO_PRECIO' && payload.phoneId && payload.newPriceBs) {
+        setPhones((prev) =>
+          prev.map((p) => (p.id === payload.phoneId ? { ...p, priceBs: payload.newPriceBs } : p))
+        );
+      } else if (targetAppr.type === 'SALIDA_STOCK' && payload.phoneId && payload.quantity) {
+        setPhones((prev) =>
+          prev.map((p) =>
+            p.id === payload.phoneId ? { ...p, stock: Math.max(0, p.stock - payload.quantity) } : p
+          )
+        );
+      } else if (targetAppr.type === 'ELIMINAR_EQUIPO' && payload.phoneId) {
+        setPhones((prev) => prev.filter((p) => p.id !== payload.phoneId));
+      }
+    }
+
+    setApprovals((prev) =>
+      prev.map((appr) => {
+        if (appr.id === id) {
+          return {
+            ...appr,
+            status: action === 'approve' ? 'aprobada' : 'rechazada',
+            reviewedBy: reviewer,
+            resolutionDate: new Date().toISOString(),
+            rejectionReason: action === 'reject' ? reason : undefined
+          };
+        }
+        return appr;
+      })
+    );
+
+    logAuditAction(
+      reviewer,
+      role,
+      action === 'approve' ? 'Aprobación Gerencial Concedida' : 'Solicitud Gerencial Rechazada',
+      `Gerencia resolvió solicitud #${targetAppr?.code || id}: ${action === 'approve' ? 'Aprobada' : 'Rechazada'}${reason ? ' - Motivo: ' + reason : ''}`,
+      'system',
+      action === 'approve' ? 'success' : 'warning'
+    );
+
+    addToast({
+      type: action === 'approve' ? 'success' : 'warning',
+      title: action === 'approve' ? '✅ Decisión Aprobada' : '❌ Solicitud Rechazada',
+      message: action === 'approve'
+        ? 'La solicitud fue aprobada por la gerencia.'
+        : 'La solicitud fue rechazada.'
+    });
+    return true;
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -1561,6 +1778,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         payrolls,
         marketStats,
         auditLogs,
+        approvals,
         toasts,
         darkMode,
         setDarkMode,
@@ -1584,6 +1802,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         removeToast,
         getActiveExchangeRate,
         refreshFromMySQL,
+        requestApproval,
+        resolveApproval,
         logAuditAction,
         getIncomeStatement,
         getBalanceSheet,
