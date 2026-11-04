@@ -7,6 +7,17 @@ import {
   validateInteger,
   formatCedulaInput
 } from '../../utils/validators';
+import {
+  ShoppingCart,
+  X,
+  User,
+  Smartphone,
+  Hash,
+  CreditCard,
+  FileText,
+  DollarSign,
+  AlertCircle
+} from 'lucide-react';
 
 interface SalesRegisterModalProps {
   isOpen: boolean;
@@ -152,20 +163,25 @@ export const SalesRegisterModal: React.FC<SalesRegisterModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50">
-      <div className="bg-white max-w-lg w-full rounded-xl border border-slate-300 shadow-xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+      <div className="bg-white max-w-lg w-full rounded-2xl border border-slate-200/80 shadow-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
         
         {/* Header */}
-        <div className="flex justify-between items-center border-b border-slate-200 pb-2.5">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">🛒</span>
-            <h3 className="font-extrabold text-sm text-slate-900">Registrar Nueva Venta de Teléfono</h3>
+        <div className="flex justify-between items-center pb-3 border-b border-slate-100">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 bg-blue-50 text-blue-600 rounded-xl">
+              <ShoppingCart className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <h3 className="font-black text-sm text-slate-900">Registrar Nueva Venta de Teléfono</h3>
+              <p className="text-[11px] text-slate-500 font-medium">Facturación fiscal en bolívares y divisas</p>
+            </div>
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 font-bold p-1 rounded hover:bg-slate-100"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
           >
-            ✕
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -173,8 +189,10 @@ export const SalesRegisterModal: React.FC<SalesRegisterModalProps> = ({
           
           {/* Vendor selection */}
           <div>
-            <label className="block text-slate-700 mb-1 font-semibold">
-              Vendedor Responsable (Persona Natural) <span className="text-red-500">*</span>
+            <label className="block text-slate-700 mb-1 font-semibold flex items-center gap-1.5">
+              <User className="w-3.5 h-3.5 text-slate-400" />
+              <span>Vendedor Responsable (Persona Natural)</span>
+              <span className="text-red-500">*</span>
             </label>
             <select
               value={vendorId}
@@ -182,8 +200,8 @@ export const SalesRegisterModal: React.FC<SalesRegisterModalProps> = ({
                 setVendorId(e.target.value);
                 if (errors.vendor) setErrors({ ...errors, vendor: '' });
               }}
-              className={`w-full p-2.5 border rounded-lg font-semibold bg-white text-slate-900 transition-colors ${
-                errors.vendor ? 'border-red-500 bg-red-50/50' : 'border-slate-300 focus:border-blue-600'
+              className={`w-full px-3 py-2.5 border rounded-xl font-semibold bg-slate-50/60 focus:bg-white text-slate-900 transition-colors outline-none text-xs cursor-pointer ${
+                errors.vendor ? 'border-red-500 bg-red-50/50' : 'border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100'
               }`}
             >
               {activeVendors.map((v) => (
@@ -193,15 +211,19 @@ export const SalesRegisterModal: React.FC<SalesRegisterModalProps> = ({
               ))}
             </select>
             {errors.vendor && (
-              <p className="text-[11px] text-red-600 mt-1 font-semibold">⚠️ {errors.vendor}</p>
+              <p className="text-[11px] text-red-600 mt-1 font-semibold flex items-center gap-1">
+                <AlertCircle className="w-3 h-3" /> {errors.vendor}
+              </p>
             )}
           </div>
 
           {/* Phone selection & Quantity */}
           <div className="grid grid-cols-3 gap-2.5">
             <div className="col-span-2">
-              <label className="block text-slate-700 mb-1 font-semibold">
-                Modelo de Teléfono <span className="text-red-500">*</span>
+              <label className="block text-slate-700 mb-1 font-semibold flex items-center gap-1.5">
+                <Smartphone className="w-3.5 h-3.5 text-slate-400" />
+                <span>Modelo de Teléfono</span>
+                <span className="text-red-500">*</span>
               </label>
               <select
                 value={phoneId}
@@ -213,8 +235,8 @@ export const SalesRegisterModal: React.FC<SalesRegisterModalProps> = ({
                   }
                   if (errors.phone) setErrors({ ...errors, phone: '' });
                 }}
-                className={`w-full p-2.5 border rounded-lg font-bold bg-white text-slate-900 transition-colors ${
-                  errors.phone ? 'border-red-500 bg-red-50/50' : 'border-slate-300 focus:border-blue-600'
+                className={`w-full px-3 py-2.5 border rounded-xl font-bold bg-slate-50/60 focus:bg-white text-slate-900 transition-colors outline-none text-xs cursor-pointer ${
+                  errors.phone ? 'border-red-500 bg-red-50/50' : 'border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100'
                 }`}
               >
                 {phones.map((p) => (
@@ -226,8 +248,10 @@ export const SalesRegisterModal: React.FC<SalesRegisterModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-slate-700 mb-1 font-semibold">
-                Cantidad <span className="text-red-500">*</span>
+              <label className="block text-slate-700 mb-1 font-semibold flex items-center gap-1.5">
+                <Hash className="w-3.5 h-3.5 text-slate-400" />
+                <span>Cantidad</span>
+                <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
@@ -239,59 +263,69 @@ export const SalesRegisterModal: React.FC<SalesRegisterModalProps> = ({
                   setQuantity(isNaN(val) ? 1 : val);
                   if (errors.quantity) setErrors({ ...errors, quantity: '' });
                 }}
-                className={`w-full p-2.5 border rounded-lg font-bold text-center text-slate-900 transition-colors ${
-                  errors.quantity ? 'border-red-500 bg-red-50/50' : 'border-slate-300 focus:border-blue-600'
+                className={`w-full px-3 py-2.5 border rounded-xl font-bold text-center text-slate-900 transition-colors outline-none text-xs bg-slate-50/60 focus:bg-white ${
+                  errors.quantity ? 'border-red-500 bg-red-50/50' : 'border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100'
                 }`}
               />
             </div>
           </div>
           {errors.quantity && (
-            <p className="text-[11px] text-red-600 font-semibold">⚠️ {errors.quantity}</p>
+            <p className="text-[11px] text-red-600 font-semibold flex items-center gap-1">
+              <AlertCircle className="w-3 h-3" /> {errors.quantity}
+            </p>
           )}
 
           {/* Stock availability indicator */}
-          <div className="flex justify-between items-center text-[11px] px-2 py-1 bg-slate-100 rounded-md">
-            <span className="text-slate-600 font-medium">Stock en almacén para este modelo:</span>
-            <span className={`font-bold ${currentStock > 4 ? 'text-emerald-700' : currentStock > 0 ? 'text-amber-700' : 'text-red-700'}`}>
-              {currentStock} unidades disponibles
+          <div className="flex justify-between items-center text-[11px] px-3 py-1.5 bg-slate-50 rounded-xl border border-slate-200/80">
+            <span className="text-slate-600 font-medium">Existencia en inventario:</span>
+            <span className={`font-bold px-2 py-0.5 rounded-md ${
+              currentStock > 4
+                ? 'bg-emerald-50 text-emerald-700'
+                : currentStock > 0
+                ? 'bg-amber-50 text-amber-700'
+                : 'bg-red-50 text-red-700'
+            }`}>
+              {currentStock} {currentStock === 1 ? 'unidad disponible' : 'unidades disponibles'}
             </span>
           </div>
 
           {/* Calculated Totals with Fiscal Breakdown */}
-          <div className="p-3.5 bg-blue-50/80 border border-blue-200 rounded-xl space-y-1.5 font-medium text-slate-800 text-xs">
+          <div className="p-4 bg-gradient-to-br from-blue-50/60 to-indigo-50/40 border border-blue-200/80 rounded-2xl space-y-2 text-xs">
             <div className="flex justify-between text-slate-600">
-              <span>Subtotal / Base Imponible:</span>
-              <span className="font-bold">Bs. {taxBaseBs.toLocaleString('es-VE')}</span>
+              <span className="font-medium">Subtotal / Base Imponible:</span>
+              <span className="font-bold text-slate-900">Bs. {taxBaseBs.toLocaleString('es-VE')}</span>
             </div>
             <div className="flex justify-between text-slate-600">
-              <span>IVA (16% Alícuota General):</span>
-              <span className="font-bold">Bs. {ivaBs.toLocaleString('es-VE')}</span>
+              <span className="font-medium">IVA (16% Alícuota General SENIAT):</span>
+              <span className="font-bold text-slate-900">Bs. {ivaBs.toLocaleString('es-VE')}</span>
             </div>
             {isEfectivoDivisas && (
-              <div className="flex justify-between text-amber-900 font-bold bg-amber-100/80 p-1.5 rounded-lg border border-amber-300">
-                <span>IGTF (3% Efectivo Divisas Ley SENIAT):</span>
+              <div className="flex justify-between text-amber-900 font-bold bg-amber-100/70 p-2 rounded-xl border border-amber-300/80 text-[11px]">
+                <span>IGTF Percibido (3% Efectivo Divisas Ley SENIAT):</span>
                 <span>+Bs. {igtfBs.toLocaleString('es-VE')}</span>
               </div>
             )}
-            <div className="pt-1.5 border-t border-blue-200 flex justify-between items-center text-sm font-black text-blue-950">
-              <span>Total Neto a Cobrar (Bs.):</span>
-              <span className="text-base text-blue-900">Bs. {totalBs.toLocaleString('es-VE')}</span>
+            <div className="pt-2 border-t border-blue-200/80 flex justify-between items-center text-sm font-black text-blue-950">
+              <span>Total Neto a Facturar:</span>
+              <span className="text-base text-blue-700 font-black">Bs. {totalBs.toLocaleString('es-VE')}</span>
             </div>
-            <div className="flex justify-between text-xs text-emerald-800 font-bold">
+            <div className="flex justify-between text-xs text-emerald-700 font-bold">
               <span>Equivalente en Divisas ($ USD):</span>
-              <span className="font-extrabold text-sm">${totalUSD} USD</span>
+              <span className="font-black text-sm">${totalUSD} USD</span>
             </div>
-            <div className="flex justify-between text-xs text-indigo-800 font-bold">
+            <div className="flex justify-between text-xs text-indigo-700 font-bold">
               <span>Equivalente en Euros (€ EUR):</span>
-              <span className="font-extrabold text-sm">€{totalEUR} EUR</span>
+              <span className="font-black text-sm">€{totalEUR} EUR</span>
             </div>
           </div>
 
           {/* Payment Method & Reference */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
-              <label className="block text-slate-700 mb-1 font-semibold">
-                Método de Pago <span className="text-red-500">*</span>
+              <label className="block text-slate-700 mb-1 font-semibold flex items-center gap-1.5">
+                <CreditCard className="w-3.5 h-3.5 text-slate-400" />
+                <span>Método de Pago</span>
+                <span className="text-red-500">*</span>
               </label>
               <select
                 value={paymentMethod}
@@ -299,11 +333,11 @@ export const SalesRegisterModal: React.FC<SalesRegisterModalProps> = ({
                   setPaymentMethod(e.target.value as any);
                   if (errors.paymentReference) setErrors({ ...errors, paymentReference: '' });
                 }}
-                className="w-full p-2.5 border border-slate-300 rounded-lg font-semibold bg-white text-slate-900 focus:border-blue-600"
+                className="w-full px-3 py-2.5 border border-slate-200 rounded-xl font-semibold bg-slate-50/60 focus:bg-white text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-xs transition-colors cursor-pointer"
               >
                 <option value="Pago Móvil">Pago Móvil</option>
                 <option value="Transferencia">Transferencia Bancaria</option>
-                <option value="Zelle">Zelle</option>
+                <option value="Zelle">Zelle (USD)</option>
                 <option value="Efectivo Divisas (USD)">Efectivo Divisas (USD) [Aplica IGTF 3%]</option>
                 <option value="Efectivo Bolívares">Efectivo Bolívares (Bs.)</option>
               </select>
@@ -311,32 +345,37 @@ export const SalesRegisterModal: React.FC<SalesRegisterModalProps> = ({
 
             {isElectronicPayment ? (
               <div>
-                <label className="block text-slate-700 mb-1 font-semibold">
-                  Nro. Referencia Bancaria <span className="text-red-500">*</span>
+                <label className="block text-slate-700 mb-1 font-semibold flex items-center gap-1.5">
+                  <FileText className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Nro. Referencia Bancaria</span>
+                  <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
-                  placeholder="Ej: 849201 (Últimos dígitos)"
+                  placeholder="Ej: 849201"
                   value={paymentReference}
                   onChange={(e) => {
                     setPaymentReference(e.target.value);
                     if (errors.paymentReference) setErrors({ ...errors, paymentReference: '' });
                   }}
-                  className={`w-full p-2.5 border rounded-lg font-mono font-bold text-slate-900 transition-colors ${
-                    errors.paymentReference ? 'border-red-500 bg-red-50/50' : 'border-slate-300 focus:border-blue-600'
+                  className={`w-full px-3 py-2.5 border rounded-xl font-mono font-bold text-slate-900 transition-colors outline-none text-xs bg-slate-50/60 focus:bg-white ${
+                    errors.paymentReference ? 'border-red-500 bg-red-50/50' : 'border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100'
                   }`}
                 />
                 {errors.paymentReference && (
-                  <p className="text-[10px] text-red-600 mt-1 font-semibold">⚠️ {errors.paymentReference}</p>
+                  <p className="text-[10px] text-red-600 mt-1 font-semibold flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" /> {errors.paymentReference}
+                  </p>
                 )}
               </div>
             ) : (
               <div>
-                <label className="block text-slate-700 mb-1 font-semibold">
-                  Modalidad de Efectivo
+                <label className="block text-slate-700 mb-1 font-semibold flex items-center gap-1.5">
+                  <DollarSign className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Modalidad de Efectivo</span>
                 </label>
-                <div className="p-2.5 bg-slate-100 rounded-lg border border-slate-200 text-slate-700 font-semibold text-xs">
-                  {isEfectivoDivisas ? '💵 Billetes USD en taquilla (IGTF 3%)' : '💵 Bolívares en efectivo (Sin IGTF)'}
+                <div className="px-3 py-2.5 bg-slate-100/80 rounded-xl border border-slate-200 text-slate-700 font-semibold text-xs flex items-center">
+                  {isEfectivoDivisas ? '💵 Billetes USD en caja (IGTF 3%)' : '💵 Bolívares en efectivo (Sin IGTF)'}
                 </div>
               </div>
             )}
@@ -350,19 +389,21 @@ export const SalesRegisterModal: React.FC<SalesRegisterModalProps> = ({
               </label>
               <input
                 type="text"
-                placeholder="V-19.458.112"
+                placeholder="Ej: V-12345678"
                 value={clientDoc}
                 onChange={(e) => {
-                  const formatted = formatCedulaInput(e.target.value);
-                  setClientDoc(formatted);
+                  const val = formatCedulaInput(e.target.value);
+                  setClientDoc(val);
                   if (errors.clientDoc) setErrors({ ...errors, clientDoc: '' });
                 }}
-                className={`w-full p-2.5 border rounded-lg text-slate-900 font-medium transition-colors ${
-                  errors.clientDoc ? 'border-red-500 bg-red-50/50' : 'border-slate-300 focus:border-blue-600'
+                className={`w-full px-3 py-2.5 border rounded-xl font-mono font-bold text-slate-900 transition-colors outline-none text-xs bg-slate-50/60 focus:bg-white ${
+                  errors.clientDoc ? 'border-red-500 bg-red-50/50' : 'border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100'
                 }`}
               />
               {errors.clientDoc && (
-                <p className="text-[10px] text-red-600 mt-1 font-semibold">⚠️ {errors.clientDoc}</p>
+                <p className="text-[10px] text-red-600 mt-1 font-semibold flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" /> {errors.clientDoc}
+                </p>
               )}
             </div>
 
@@ -379,12 +420,14 @@ export const SalesRegisterModal: React.FC<SalesRegisterModalProps> = ({
                   setClientName(val);
                   if (errors.clientName) setErrors({ ...errors, clientName: '' });
                 }}
-                className={`w-full p-2.5 border rounded-lg text-slate-900 font-medium transition-colors ${
-                  errors.clientName ? 'border-red-500 bg-red-50/50' : 'border-slate-300 focus:border-blue-600'
+                className={`w-full px-3 py-2.5 border rounded-xl text-slate-900 font-medium transition-colors outline-none text-xs bg-slate-50/60 focus:bg-white ${
+                  errors.clientName ? 'border-red-500 bg-red-50/50' : 'border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100'
                 }`}
               />
               {errors.clientName && (
-                <p className="text-[10px] text-red-600 mt-1 font-semibold">⚠️ {errors.clientName}</p>
+                <p className="text-[10px] text-red-600 mt-1 font-semibold flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" /> {errors.clientName}
+                </p>
               )}
             </div>
           </div>
@@ -399,23 +442,23 @@ export const SalesRegisterModal: React.FC<SalesRegisterModalProps> = ({
               value={notes}
               maxLength={250}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full p-2.5 border border-slate-300 rounded-lg text-slate-900"
+              className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-slate-900 bg-slate-50/60 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-xs transition-colors"
             />
           </div>
 
-          <div className="pt-3 flex justify-end gap-2.5 border-t border-slate-200">
+          <div className="pt-3 flex justify-end gap-2.5 border-t border-slate-100">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-bold transition-colors"
+              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition-colors cursor-pointer text-xs"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold shadow-sm transition-colors"
+              className="px-5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl font-bold shadow-md shadow-emerald-500/20 active:scale-95 transition-all cursor-pointer text-xs"
             >
-              Confirmar y Procesar Venta
+              Confirmar y Facturar Venta
             </button>
           </div>
 
