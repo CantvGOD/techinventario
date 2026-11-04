@@ -19,10 +19,11 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
-  const { activeRole, phones, payrolls, auditLogs } = useApp();
+  const { activeRole, phones, payrolls, auditLogs, approvals } = useApp();
 
   const lowStockCount = phones.filter((p) => p.stock <= p.minStock).length;
   const pendingCount = payrolls.filter((p) => p.status === 'Pendiente').length;
+  const pendingApprovalsCount = approvals.filter((a) => a.status === 'pendiente').length;
 
   const navItems: {
     id: NavTab;
@@ -35,7 +36,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
       id: 'dashboard',
       label: 'Inicio / Dashboard',
       icon: '📊',
-      roles: ['vendedor', 'admin', 'super_user']
+      roles: ['vendedor', 'admin', 'super_user'],
+      badge: (activeRole === 'admin' || activeRole === 'super_user') && pendingApprovalsCount > 0 ? `${pendingApprovalsCount} Pend.` : undefined
     },
     {
       id: 'inventory',

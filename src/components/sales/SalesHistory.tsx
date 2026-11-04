@@ -1,4 +1,15 @@
 import React, { useState } from 'react';
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Cell,
+  PieChart,
+  Pie
+} from 'recharts';
 import { useApp } from '../../context/AppContext';
 import type { SaleTransaction } from '../../types';
 import {
@@ -8,7 +19,8 @@ import {
   FileText,
   Printer,
   X,
-  Plus
+  Plus,
+  BarChart2
 } from 'lucide-react';
 
 interface SalesHistoryProps {
@@ -16,12 +28,13 @@ interface SalesHistoryProps {
 }
 
 export const SalesHistory: React.FC<SalesHistoryProps> = ({ onOpenNewSale }) => {
-  const { sales, users } = useApp();
+  const { sales, users, exchangeRates } = useApp();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedVendor, setSelectedVendor] = useState<string>('all');
   const [selectedPayment, setSelectedPayment] = useState<string>('all');
   const [selectedReceipt, setSelectedReceipt] = useState<SaleTransaction | null>(null);
+  const [showCharts, setShowCharts] = useState(true);
 
   const vendors = users.filter((u) => u.role === 'vendedor');
 
@@ -38,6 +51,31 @@ export const SalesHistory: React.FC<SalesHistoryProps> = ({ onOpenNewSale }) => 
 
   const totalSalesBs = filteredSales.reduce((acc, s) => acc + s.totalBs, 0);
   const totalSalesUSD = filteredSales.reduce((acc, s) => acc + s.totalUSD, 0);
+
+  // Estadísticas para gráficas
+  const paymentMethodStats = Object.entries(
+    filteredSales.reduce((acc, s) => {
+      acc[s.paymentMethod] = (acc[s.paymentMethod] || 0) + s.totalBs;
+      return acc;
+    }, {} as { [k: string]: number })
+  ).map(([name, value]) => ({
+    name,
+    value,
+    usd: Number((value / exchangeRates.bcvUSD).toFixed(2))
+  }));
+
+  const vendorStats = Object.entries(
+    filteredSales.reduce((acc, s) => {
+      acc[s.vendorName] = (acc[s.vendorName] || 0) + s.quantity;
+      return acc;
+    }, {} as { [k: string]: number })
+  ).map(([name, units]) => ({
+    name: name.split(' ')[0],
+    fullName: name,
+    units
+  }));
+
+  const CHART_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
 
   const handlePrintReceipt = () => {
     window.print();
@@ -58,13 +96,22 @@ export const SalesHistory: React.FC<SalesHistoryProps> = ({ onOpenNewSale }) => 
           </p>
         </div>
 
-        <button
-          onClick={onOpenNewSale}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs shadow-md shadow-blue-500/25 active:scale-95 transition-all"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Nueva Venta</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setShowCharts(!showCharts)}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 text-slate-700 dark:text-slate-200 text-xs font-bold border border-slate-300 dark:border-slate-700 transition-colors shadow-xs cursor-pointer"
+          >
+            <BarChart2 className="w-4 h-4 text-blue-600" />
+            <span>{showCharts ? 'Ocultar Gráficas' : 'Ver Estadísticas'}</span>
+          </button>
+          <button
+            onClick={onOpenNewSale}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs shadow-md shadow-blue-500/25 active:scale-95 transition-all"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Nueva Venta</span>
+          </button>
+        </div>
       </div>
 
       {/* Summary KPI Strip */}
@@ -90,6 +137,75 @@ export const SalesHistory: React.FC<SalesHistoryProps> = ({ onOpenNewSale }) => 
           </p>
         </div>
       </div>
+
+      {/* Visual Analytics Strip (Recharts) */}
+      {showCharts && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Gráfica 1: Recaudación por Método de Pago */}
+          <div className="glass-card p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
+            <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide flex items-center justify-between">
+              <span>🍩 Recaudación por Método de Pago</span>
+              <span className="text-[10px] text-slate-400 font-normal">Filtro activo</span>
+            </h3>
+            <div className="h-44 w-full">
+              {paymentMethodStats.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={paymentMethodStats}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={30}
+                      outerRadius={60}
+                      paddingAngle={3}
+                      label={({ name, percent }: any) => `${name} (${((percent || 0) * 100).toFixed(0)}%)`}
+                    >
+                      {paymentMethodStats.map((_, index) => (
+                        <Cell key={`cell-pm-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(val: any) => [`Bs. ${Number(val).toLocaleString('es-VE')}`, 'Monto']} />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-full flex items-center justify-center text-xs text-slate-400">
+                  Sin ventas con este filtro
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Gráfica 2: Unidades vendidas por vendedor */}
+          <div className="glass-card p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
+            <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide flex items-center justify-between">
+              <span>📊 Desempeño: Unidades por Vendedor</span>
+              <span className="text-[10px] text-slate-400 font-normal">Equipos facturados</span>
+            </h3>
+            <div className="h-44 w-full">
+              {vendorStats.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={vendorStats} margin={{ top: 10, right: 10, left: -20, bottom: 5 }}>
+                    <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+                    <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
+                    <Tooltip formatter={(val: any, _name: any, item: any) => [`${val} unidades`, item.payload.fullName]} />
+                    <Bar dataKey="units" fill="#3b82f6" radius={[6, 6, 0, 0]}>
+                      {vendorStats.map((_, index) => (
+                        <Cell key={`bar-v-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-full flex items-center justify-center text-xs text-slate-400">
+                  Sin datos de vendedores
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Filters Bar */}
       <div className="glass-card p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">

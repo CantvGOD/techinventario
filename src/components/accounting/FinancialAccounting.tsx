@@ -1,4 +1,15 @@
 import React, { useState } from 'react';
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Cell,
+  PieChart,
+  Pie
+} from 'recharts';
 import { useApp } from '../../context/AppContext';
 import type { ExpenseCategory, PaymentMethod } from '../../types';
 import {
@@ -61,6 +72,26 @@ export const FinancialAccounting: React.FC = () => {
   const incomeStatement = getIncomeStatement();
   const balanceSheet = getBalanceSheet();
   const dailyCashClose = getDailyCashClose(selectedCloseDate);
+
+  // Gráficas contables con Recharts
+  const incomeChartData = [
+    { name: 'Ventas Netas', montoUSD: incomeStatement.salesRevenueUSD, fill: '#3b82f6' },
+    { name: 'Costo (CMV)', montoUSD: incomeStatement.costOfGoodsSoldUSD, fill: '#ef4444' },
+    { name: 'Gastos Operat.', montoUSD: incomeStatement.totalExpensesUSD, fill: '#f59e0b' },
+    { name: 'Utilidad Neta', montoUSD: Math.max(0, incomeStatement.netIncomeUSD), fill: '#10b981' }
+  ];
+
+  const expensesChartData = Object.entries(
+    expenses.reduce((acc, exp) => {
+      acc[exp.category] = (acc[exp.category] || 0) + exp.amountUSD;
+      return acc;
+    }, {} as { [cat: string]: number })
+  ).map(([name, value]) => ({
+    name,
+    value: Number(value.toFixed(2))
+  }));
+
+  const CHART_COLORS = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
 
   const handlePrint = () => {
     window.print();
@@ -264,6 +295,28 @@ export const FinancialAccounting: React.FC = () => {
               <span className={`text-[10px] px-1.5 py-0.2 rounded font-bold ${incomeStatement.netIncomeUSD >= 0 ? 'bg-blue-100 text-blue-800' : 'bg-rose-100 text-rose-800'}`}>
                 Margen Neto: {incomeStatement.profitMarginPercentage}%
               </span>
+            </div>
+          </div>
+
+          {/* Gráfica Estado de Resultados (Recharts) */}
+          <div className="bg-white p-4 rounded-2xl border border-slate-300 shadow-sm print:hidden space-y-2">
+            <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center justify-between">
+              <span>📊 Comparativa Visual: Flujo de Ingresos, Costos y Utilidad Neta</span>
+              <span className="text-[10px] text-slate-500 font-semibold">Cifras en USD ($)</span>
+            </h3>
+            <div className="h-44 w-full pt-1">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={incomeChartData} margin={{ top: 10, right: 10, left: -20, bottom: 5 }}>
+                  <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+                  <YAxis tick={{ fontSize: 10 }} />
+                  <Tooltip formatter={(val: any) => [`$${Number(val).toLocaleString('en-US')} USD`, 'Monto']} />
+                  <Bar dataKey="montoUSD" radius={[6, 6, 0, 0]}>
+                    {incomeChartData.map((entry, index) => (
+                      <Cell key={`cell-inc-${index}`} fill={entry.fill} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
@@ -616,6 +669,38 @@ export const FinancialAccounting: React.FC = () => {
               <Plus className="w-4 h-4" /> Registrar Gasto
             </button>
           </div>
+
+          {/* Gráfica de Gastos por Categoría */}
+          {expenses.length > 0 && (
+            <div className="bg-white p-4 rounded-xl border border-slate-300 shadow-sm space-y-2 print:hidden">
+              <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center justify-between">
+                <span>🍩 Distribución de Gastos Operativos por Categoría</span>
+                <span className="text-[10px] text-slate-500 font-semibold">Total Egresos: ${expenses.reduce((a, b) => a + b.amountUSD, 0).toFixed(2)} USD</span>
+              </h3>
+              <div className="h-44 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={expensesChartData}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={30}
+                      outerRadius={60}
+                      paddingAngle={3}
+                      label={({ name, percent }: any) => `${name} (${((percent || 0) * 100).toFixed(0)}%)`}
+                    >
+                      {expensesChartData.map((_, index) => (
+                        <Cell key={`cell-exp-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(val: any) => [`$${Number(val).toFixed(2)} USD`, 'Gasto']} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
 
           <div className="bg-white rounded-xl border border-slate-300 shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
