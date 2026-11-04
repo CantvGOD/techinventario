@@ -31,7 +31,7 @@ CREATE TABLE `auditoria` (
   `accion` varchar(100) NOT NULL,
   `detalles` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -49,7 +49,28 @@ INSERT INTO `auditoria` VALUES
 (5,'2026-10-07 17:15:53','Administrador','admin','Registro de Gasto Operativo','Registro de gasto operativo (EXP-2026-594): Luz / Electricidad - \"Recibo Corpoelec local comercial\". Monto: Bs. 29.906,1 ($35.00 USD). Pagado vía Pago Móvil (Ref: REF-781923).'),
 (6,'2026-10-07 17:15:59','Carlos Mendoza','super_user','Venta y Salida de Stock','Venta confirmada y salida de stock: Se vendieron 1 unidades de \"Motorola Edge 50 Pro\" (Cód: PH-004) al cliente Test Client (C.I./RIF: V-12345678) por Bs. 469.953 ($550 USD) vía Pago Móvil | Ref: PM-901824. Stock previo: 23 unids ➔ Stock resultante disponible: 22 unids. Transacción: VEN-2026-275.'),
 (7,'2026-10-07 17:25:21','Carlos Mendoza','super_user','Cierre de Sesión','El usuario Carlos Mendoza ha cerrado su sesión en el sistema'),
-(8,'2026-10-07 17:25:23','Carlos Mendoza','super_user','Inicio de Sesión Exitoso','El usuario Carlos Mendoza (jefe@empresa.com) ha iniciado sesión con rol de super_user');
+(8,'2026-10-07 17:25:23','Carlos Mendoza','super_user','Inicio de Sesión Exitoso','El usuario Carlos Mendoza (jefe@empresa.com) ha iniciado sesión con rol de super_user'),
+(9,'2026-10-29 11:39:39','Carlos Mendoza','super_user','Ingreso de Teléfono a Inventario','Nuevo equipo incorporado al inventario: \"CHINOMAX T300 PLUS\" (Cód: PH-090). Stock inicial: 5 unidades (Stock mínimo: 2). Precio: Bs. 120.000. Costo: $95 USD (Bs. 81.173,7). Margen: 47.83%.'),
+(10,'2026-10-29 11:40:50','Pedro Rodríguez','vendedor','Venta y Salida de Stock','Venta confirmada y salida de stock: Se vendieron 4 unidades de \"CHINOMAX T300 PLUS\" (Cód: PH-090) al cliente CHINO MAX (C.I./RIF: V-30554390) por Bs. 480.000 ($561.76 USD) vía Efectivo Bolívares. Stock previo: 5 unids ➔ Stock resultante disponible: 1 unids. Transacción: VEN-2026-293.'),
+(11,'2026-10-29 11:42:11','Carlos Mendoza','vendedor','Cambio de Rol Activo','Se cambió el rol de visualización de super_user a vendedor'),
+(12,'2026-10-29 11:42:36','Carlos Mendoza','vendedor','Solicitud de Aprobación Gerencial Creada','Solicitud #SOL-56181-93 (ELIMINAR_EQUIPO) enviada a Gerencia: Solicitud de baja y desincorporación total del equipo \"CHINOMAX T300 PLUS\" (1 unids en existencia)'),
+(13,'2026-10-29 11:42:45','Carlos Mendoza','admin','Cambio de Rol Activo','Se cambió el rol de visualización de vendedor a admin'),
+(14,'2026-10-29 11:42:51','Carlos Mendoza','admin','Aprobación Gerencial Concedida','Gerencia APROBÓ la solicitud #SOL-56181-93 (ELIMINAR_EQUIPO) enviada por Carlos Mendoza. Efecto: Solicitud de baja y desincorporación total del equipo \"CHINOMAX T300 PLUS\" (1 unids en existencia)'),
+(15,'2026-10-29 11:44:28','Carlos Mendoza','admin','Recepción de Mercancía y Costeo','Entrada de mercancía / Compra (CMP-668845-652): 51x \"Apple iPhone 14 Pro\" a $450 USD c/u (Total: $22950 USD / Bs. 19.609.857). Proveedor: Distribuidora Mayorista Caracas C.A. (Fact: FACT-2026-4067). Método: promedio_ponderado. Costo resultante: $482.63 USD (Bs. 412.388,03) | Precio de venta ajustado: Bs. 854.460 ➔ Bs. 577.341,53 (Margen: 40%). Stock: 6 ➔ 57 unids.'),
+(16,'2026-10-29 11:44:59','Carlos Mendoza','admin','Salida de Stock de Inventario','Modificación de equipo \"Apple iPhone 14 Pro\" (Cód: PH-009): Stock: 57 unids ➔ 50 unids (-7 unids retiradas del inventario).'),
+(17,'2026-10-29 11:46:56','Carlos Mendoza','super_user','Cambio de Rol Activo','Se cambió el rol de visualización de admin a super_user'),
+(18,'2026-10-29 11:47:13','Carlos Mendoza','vendedor','Cambio de Rol Activo','Se cambió el rol de visualización de super_user a vendedor'),
+(19,'2026-10-29 11:48:02','Carlos Mendoza','admin','Cambio de Rol Activo','Se cambió el rol de visualización de vendedor a admin'),
+(20,'2026-10-29 11:48:11','Carlos Mendoza','super_user','Cambio de Rol Activo','Se cambió el rol de visualización de admin a super_user'),
+(21,'2026-10-29 11:49:05','Carlos Mendoza','super_user','Cierre de Sesión','El usuario Carlos Mendoza ha cerrado su sesión en el sistema'),
+(22,'2026-10-29 11:49:11','María González','vendedor','Inicio de Sesión Exitoso','El usuario María González (maria.gonzalez@empresa.com) ha iniciado sesión con rol de vendedor'),
+(23,'2026-10-29 11:49:21','María González','super_user','Cambio de Rol Activo','Se cambió el rol de visualización de vendedor a super_user'),
+(24,'2026-10-29 11:49:33','María González','vendedor','Cambio de Rol Activo','Se cambió el rol de visualización de super_user a vendedor'),
+(25,'2026-10-29 11:51:21','María González','admin','Cambio de Rol Activo','Se cambió el rol de visualización de vendedor a admin'),
+(26,'2026-10-29 11:51:27','María González','super_user','Cambio de Rol Activo','Se cambió el rol de visualización de admin a super_user'),
+(27,'2026-10-29 11:51:39','María González','vendedor','Cambio de Rol Activo','Se cambió el rol de visualización de super_user a vendedor'),
+(28,'2026-10-29 11:54:34','María González','vendedor','Cierre de Sesión','El usuario María González ha cerrado su sesión en el sistema'),
+(29,'2026-10-29 11:54:47','Carlos Mendoza','super_user','Inicio de Sesión Exitoso','El usuario Carlos Mendoza (jefe@empresa.com) ha iniciado sesión con rol de super_user');
 /*!40000 ALTER TABLE `auditoria` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -85,7 +106,7 @@ CREATE TABLE `compras_inventario` (
   UNIQUE KEY `codigo_compra` (`codigo_compra`),
   KEY `fk_compras_telefono` (`telefono_id`),
   CONSTRAINT `fk_compras_telefono` FOREIGN KEY (`telefono_id`) REFERENCES `telefonos` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -99,7 +120,8 @@ INSERT INTO `compras_inventario` VALUES
 (1,'CMP-2026-0801','2026-08-20 09:30:00',1,'Distribuidora Samsung Latinoamérica','FACT-SM-9021',10,1000.00,854460.00,10000.00,8544600.00,854.46,'promedio_ponderado',950.00,1000.00,1050000.00,1110798.00,'Lote importado inicial S24 Ultra'),
 (2,'CMP-2026-0802','2026-08-25 11:00:00',2,'Apple Wholesale Miami Corp','FACT-AP-4401',8,920.00,786103.20,7360.00,6288825.60,854.46,'promedio_ponderado',900.00,920.00,990000.00,1025352.00,'Lote Titanium iPhone 15 Pro Max'),
 (3,'CMP-2026-0901','2026-09-02 14:15:00',3,'Xiaomi Import Venezuela C.A.','FACT-XM-1120',20,480.00,410140.80,9600.00,8202816.00,854.46,'promedio_ponderado',450.00,480.00,520000.00,555399.00,'Reabastecimiento serie Leica'),
-(4,'CMP-2026-728','2026-10-07 17:15:42',4,'Motorola Direct Caracas','FACT-MOT-7701',5,420.00,358873.20,2100.00,1794366.00,854.46,'promedio_ponderado',410.00,412.17,469953.00,469953.00,'Prueba de lote de reposición');
+(4,'CMP-2026-728','2026-10-07 17:15:42',4,'Motorola Direct Caracas','FACT-MOT-7701',5,420.00,358873.20,2100.00,1794366.00,854.46,'promedio_ponderado',410.00,412.17,469953.00,469953.00,'Prueba de lote de reposición'),
+(5,'CMP-668845-652','2026-10-29 11:44:28',9,'Distribuidora Mayorista Caracas C.A.','FACT-2026-4067',51,450.00,384507.00,22950.00,19609857.00,854.46,'promedio_ponderado',760.00,482.63,854460.00,577341.53,'Recepción de nuevo lote de inventario');
 /*!40000 ALTER TABLE `compras_inventario` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -226,7 +248,7 @@ LOCK TABLES `pagos_nomina` WRITE;
 INSERT INTO `pagos_nomina` VALUES
 (1,3,'2026-09',5,3887793.00,4550.00,7300.00,10.00,388779.30,1825.00,397904.30,465.68,'Pendiente',NULL,NULL),
 (2,4,'2026-09',1,1025352.00,1200.00,7300.00,10.00,102535.20,0.00,109835.20,128.54,'Pendiente',NULL,NULL),
-(3,5,'2026-09',4,1230422.40,1440.00,7300.00,10.00,123042.24,0.00,130342.24,152.54,'Pagado','2026-09-08','REF-BCV-992019'),
+(3,5,'2026-09',8,1710422.40,2001.76,7300.00,10.00,171042.24,0.00,178342.24,208.72,'Pagado','2026-09-08','REF-BCV-992019'),
 (4,6,'2026-09',2,666478.80,780.00,7300.00,10.00,66647.88,0.00,73947.88,86.54,'Pagado','2026-09-08','REF-BCV-992020');
 /*!40000 ALTER TABLE `pagos_nomina` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -257,7 +279,7 @@ CREATE TABLE `solicitudes_aprobacion` (
   `motivo_rechazo` text DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `codigo` (`codigo`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -269,7 +291,8 @@ LOCK TABLES `solicitudes_aprobacion` WRITE;
 /*!40000 ALTER TABLE `solicitudes_aprobacion` DISABLE KEYS */;
 INSERT INTO `solicitudes_aprobacion` VALUES
 (1,'SOL-2026-101','CAMBIO_PRECIO','Carlos Mendoza','vendedor','1','Samsung Galaxy S24 Ultra 5G','Solicitud de descuento comercial por volumen: Ajustar precio unitario de venta de Bs. 1.110.798 a Bs. 1.050.000.','{\"phoneId\":\"ph-1\",\"newPriceBs\":1050000}','pendiente',NULL,'2026-10-29 11:32:20',NULL,NULL),
-(2,'SOL-2026-102','SALIDA_STOCK','Laura Rodríguez','vendedor','4','Motorola Edge 50 Pro','Baja de 1 unidad de inventario por avería y rotura de cristal en exhibición.','{\"phoneId\":\"ph-4\",\"quantity\":1,\"reason\":\"Daño en exhibición\"}','pendiente',NULL,'2026-10-29 11:32:20',NULL,NULL);
+(2,'SOL-2026-102','SALIDA_STOCK','Laura Rodríguez','vendedor','4','Motorola Edge 50 Pro','Baja de 1 unidad de inventario por avería y rotura de cristal en exhibición.','{\"phoneId\":\"ph-4\",\"quantity\":1,\"reason\":\"Daño en exhibición\"}','pendiente',NULL,'2026-10-29 11:32:20',NULL,NULL),
+(3,'SOL-56181-93','ELIMINAR_EQUIPO','Carlos Mendoza','vendedor','ph-15','CHINOMAX T300 PLUS','Solicitud de baja y desincorporación total del equipo \"CHINOMAX T300 PLUS\" (1 unids en existencia)','{\"phoneId\":\"ph-15\"}','aprobada','Carlos Mendoza','2026-10-29 11:42:36','2026-10-29 11:42:51',NULL);
 /*!40000 ALTER TABLE `solicitudes_aprobacion` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -337,7 +360,7 @@ CREATE TABLE `telefonos` (
   `ano_lanzamiento` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `codigo_ph` (`codigo_ph`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -356,7 +379,7 @@ INSERT INTO `telefonos` VALUES
 (6,'PH-006','Samsung','Galaxy A55 5G','8 GB','256 GB','Awesome Iceblue','50 MP OIS','6.6 Super AMOLED',333239.40,247793.40,290.00,290.00,290.00,'promedio_ponderado',34.48,35,8,'Gama Media',2024),
 (7,'PH-007','Xiaomi','Redmi Note 13 Pro+ 5G','8 GB','256 GB','Aurora Purple','200 MP OIS','6.67 AMOLED 120Hz',307605.60,222159.60,260.00,260.00,260.00,'promedio_ponderado',38.46,40,10,'Gama Media',2024),
 (8,'PH-008','Realme','12 Pro+ 5G','12 GB','256 GB','Submarine Blue','64 MP Periscope','6.7 Curved 120Hz',358873.20,264882.60,310.00,310.00,310.00,'promedio_ponderado',35.48,12,4,'Gama Media',2024),
-(9,'PH-009','Apple','iPhone 14 Pro','6 GB','256 GB','Deep Purple','48 MP','6.1 OLED 120Hz',854460.00,649389.60,760.00,760.00,760.00,'promedio_ponderado',31.58,6,2,'Gama Alta',2022),
+(9,'PH-009','Apple','iPhone 14 Pro','6 GB','256 GB','Deep Purple','48 MP','6.1 OLED 120Hz',577341.53,412388.03,482.63,450.00,482.63,'promedio_ponderado',40.00,50,2,'Gama Alta',2022),
 (10,'PH-010','Samsung','Galaxy S23 FE','8 GB','128 GB','Menta','50 MP OIS','6.4 Dynamic AMOLED',427230.00,316150.20,370.00,370.00,370.00,'promedio_ponderado',35.14,15,4,'Gama Media',2023),
 (11,'PH-011','Honor','Magic 6 Lite','8 GB','256 GB','Emerald Green','108 MP Ultra','6.78 AMOLED',273427.20,196525.80,230.00,230.00,230.00,'promedio_ponderado',39.13,25,5,'Gama Entrada',2024),
 (12,'PH-012','Infinix','Zero 30 5G','12 GB','256 GB','Rome Green','108 MP + 50 MP Selfie','6.78 AMOLED 144Hz',239248.80,170892.00,200.00,200.00,200.00,'promedio_ponderado',40.00,30,6,'Gama Entrada',2023),
@@ -444,7 +467,7 @@ CREATE TABLE `ventas` (
   KEY `fk_ventas_telefono` (`telefono_id`),
   CONSTRAINT `fk_ventas_telefono` FOREIGN KEY (`telefono_id`) REFERENCES `telefonos` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_ventas_usuario` FOREIGN KEY (`usuario_vendedor_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -475,4 +498,4 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-10-29 11:32:41
+-- Dump completed on 2026-11-03 23:41:01

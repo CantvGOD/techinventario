@@ -24,6 +24,9 @@ function loadFallbackDb() {
   if (fs.existsSync(DB_FILE)) {
     try {
       memoryDb = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+      if (!memoryDb.solicitudes_aprobacion) {
+        memoryDb.solicitudes_aprobacion = [];
+      }
       console.log('📂 Base de datos local cargada desde data/techinventario_database.json');
       return;
     } catch (e) {
@@ -42,14 +45,16 @@ function loadFallbackDb() {
     tasas_cambio: [
       {
         id: 1,
-        tasa_bcv_usd: 36.50,
-        tasa_bcv_eur: 39.80,
-        tasa_paralelo_usd: 40.20,
+        tasa_bcv_usd: 854.46,
+        tasa_bcv_eur: 974.06,
+        tasa_paralelo_usd: 954.16,
+        tasa_activa: 'bcvUSD',
         fecha_actualizacion: new Date().toISOString()
       }
     ],
     estadisticas_mercado: [],
-    auditoria: []
+    auditoria: [],
+    solicitudes_aprobacion: []
   };
   saveFallbackDb();
 }
@@ -428,6 +433,60 @@ function executeFallbackQuery(sql, params = []) {
     memoryDb.auditoria.push(audit);
     saveFallbackDb();
     return [{ insertId: newId }, []];
+  }
+
+  // 12. SOLICITUDES APROBACION
+  if (!memoryDb.solicitudes_aprobacion) memoryDb.solicitudes_aprobacion = [];
+  if (upper.startsWith('SELECT * FROM SOLICITUDES_APROBACION WHERE ID=?') || upper.startsWith('SELECT * FROM SOLICITUDES_APROBACION WHERE ID = ?')) {
+    const rawId = parseInt(params[0], 10);
+    const row = memoryDb.solicitudes_aprobacion.find(s => s.id === rawId);
+    return [[row || null], []];
+  }
+  if (upper.startsWith('SELECT * FROM SOLICITUDES_APROBACION')) {
+    const rows = [...memoryDb.solicitudes_aprobacion].sort((a, b) => b.id - a.id);
+    return [rows, []];
+  }
+  if (upper.startsWith('INSERT INTO SOLICITUDES_APROBACION')) {
+    const newId = memoryDb.solicitudes_aprobacion.reduce((max, s) => Math.max(max, s.id || 0), 0) + 1;
+    const req = {
+      id: newId,
+      codigo: params[0],
+      tipo: params[1],
+      solicitante_nombre: params[2],
+      solicitante_rol: params[3],
+      equipo_id: params[4],
+      equipo_nombre: params[5],
+      descripcion: params[6],
+      datos_solicitud: params[7],
+      estado: 'pendiente',
+      fecha_solicitud: new Date().toISOString().slice(0, 19).replace('T', ' ')
+    };
+    memoryDb.solicitudes_aprobacion.push(req);
+    saveFallbackDb();
+    return [{ insertId: newId }, []];
+  }
+  if (upper.includes('UPDATE SOLICITUDES_APROBACION SET ESTADO="APROBADA"')) {
+    const rawId = parseInt(params[1], 10);
+    const appr = memoryDb.solicitudes_aprobacion.find(s => s.id === rawId);
+    if (appr) {
+      appr.estado = 'aprobada';
+      appr.revisado_por = params[0];
+      appr.fecha_resolucion = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    }
+    saveFallbackDb();
+    return [{ affectedRows: appr ? 1 : 0 }, []];
+  }
+  if (upper.includes('UPDATE SOLICITUDES_APROBACION SET ESTADO="RECHAZADA"')) {
+    const rawId = parseInt(params[2], 10);
+    const appr = memoryDb.solicitudes_aprobacion.find(s => s.id === rawId);
+    if (appr) {
+      appr.estado = 'rechazada';
+      appr.revisado_por = params[0];
+      appr.motivo_rechazo = params[1];
+      appr.fecha_resolucion = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    }
+    saveFallbackDb();
+    return [{ affectedRows: appr ? 1 : 0 }, []];
   }
 
   console.warn('⚠️ Consulta local no mapeada explícitamente:', trimmed);

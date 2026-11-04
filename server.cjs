@@ -1037,6 +1037,60 @@ app.post('/api/approvals/:id/resolve', async (req, res) => {
       } else if (appr.tipo === 'ELIMINAR_EQUIPO' && payload.phoneId) {
         const rawPhoneId = String(payload.phoneId).replace(/^ph-/, '');
         await pool.query('DELETE FROM telefonos WHERE id=?', [rawPhoneId]);
+      } else if (appr.tipo === 'ENTRADA_LOTE' && payload.phoneId) {
+        const rawPhoneId = String(payload.phoneId).replace(/^ph-/, '');
+        const [[phone]] = await pool.query('SELECT * FROM telefonos WHERE id=?', [rawPhoneId]);
+        if (phone) {
+          const [[rates]] = await pool.query('SELECT * FROM tasas_cambio LIMIT 1');
+          const rateUSD = rates ? parseFloat(rates.tasa_bcv_usd) : 854.46;
+          const qty = parseInt(payload.quantity, 10);
+          const costUSD = parseFloat(payload.unitCostUSD);
+          const costBs = parseFloat(payload.unitCostBs) || (costUSD * rateUSD);
+          const oldStock = phone.stock;
+          const oldCostUSD = parseFloat(phone.costo_usd) || 0;
+          const oldPriceBs = parseFloat(phone.precio_bs);
+          const newStock = oldStock + qty;
+
+          let newCostUSD = costUSD;
+          if (payload.costMethodApplied === 'promedio_ponderado' && newStock > 0) {
+            newCostUSD = Number((((oldStock * oldCostUSD) + (qty * costUSD)) / newStock).toFixed(2));
+          }
+          const newCostBs = Number((newCostUSD * rateUSD).toFixed(2));
+          const finalPriceBs = parseFloat(payload.newPriceBs) || oldPriceBs;
+          const profitMargin = Number((((finalPriceBs - newCostBs) / newCostBs) * 100).toFixed(2));
+
+          await pool.query(
+            `UPDATE telefonos
+             SET stock=?, costo_usd=?, costo_bs=?, ultimo_costo_usd=?, costo_promedio_usd=?, metodo_costeo=?, precio_bs=?, margen_ganancia=?
+             WHERE id=?`,
+            [newStock, newCostUSD, newCostBs, costUSD, newCostUSD, payload.costMethodApplied || 'promedio_ponderado', finalPriceBs, profitMargin, rawPhoneId]
+          );
+
+          const code = `CMP-${Date.now().toString().slice(-6)}-${Math.floor(100 + Math.random() * 900)}`;
+          await pool.query(
+            `INSERT INTO compras_inventario
+             (codigo_compra, fecha, telefono_id, proveedor, numero_factura, cantidad, costo_unitario_usd, costo_unitario_bs, total_compra_usd, total_compra_bs, tasa_cambio_usada, metodo_costeo_aplicado, costo_anterior_usd, costo_nuevo_usd, precio_venta_anterior_bs, precio_venta_nuevo_bs, notas)
+             VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+              code,
+              rawPhoneId,
+              payload.supplier || 'Proveedor Mayorista',
+              payload.invoiceNumber || 'FACT-AUTORIZADA',
+              qty,
+              costUSD,
+              costBs,
+              Number((costUSD * qty).toFixed(2)),
+              Number((costBs * qty).toFixed(2)),
+              rateUSD,
+              payload.costMethodApplied || 'promedio_ponderado',
+              oldCostUSD,
+              newCostUSD,
+              oldPriceBs,
+              finalPriceBs,
+              payload.notes || 'Lote aprobado por gerencia'
+            ]
+          );
+        }
       }
 
       await pool.query(

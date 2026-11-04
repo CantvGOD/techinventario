@@ -1726,6 +1726,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         );
       } else if (targetAppr.type === 'ELIMINAR_EQUIPO' && payload.phoneId) {
         setPhones((prev) => prev.filter((p) => p.id !== payload.phoneId));
+      } else if (targetAppr.type === 'ENTRADA_LOTE' && payload.phoneId) {
+        registerPurchase(payload);
       }
     }
 

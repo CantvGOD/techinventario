@@ -1041,5 +1041,39 @@
       "accion": "Ingreso de Stock a Inventario",
       "detalles": "Ingreso de unidades a inventario: Se sumaron 3 unidades a \"Xiaomi Chinodoble Pro\" (Cód: PH-096). Justificación: Recepción de nuevo lote de importación. Stock anterior: 0 unids ➔ Stock resultante disponible: 3 unids (+3 unids incorporadas)."
     }
+  ],
+  "solicitudes_aprobacion": [
+    {
+      "id": 1,
+      "codigo": "SOL-2026-101",
+      "tipo": "CAMBIO_PRECIO",
+      "solicitante_nombre": "Carlos Mendoza",
+      "solicitante_rol": "vendedor",
+      "equipo_id": "1",
+      "equipo_nombre": "Samsung Galaxy S24 Ultra 5G",
+      "descripcion": "Solicitud de descuento comercial por volumen: Ajustar precio unitario de venta de Bs. 1.110.798 a Bs. 1.050.000.",
+      "datos_solicitud": "{\"phoneId\":\"ph-1\",\"newPriceBs\":1050000}",
+      "estado": "pendiente",
+      "revisado_por": null,
+      "fecha_solicitud": "2026-10-29 11:32:20",
+      "fecha_resolucion": null,
+      "motivo_rechazo": null
+    },
+    {
+      "id": 2,
+      "codigo": "SOL-2026-102",
+      "tipo": "SALIDA_STOCK",
+      "solicitante_nombre": "Laura Rodríguez",
+      "solicitante_rol": "vendedor",
+      "equipo_id": "4",
+      "equipo_nombre": "Motorola Edge 50 Pro",
+      "descripcion": "Baja de 1 unidad de inventario por avería y rotura de cristal en exhibición.",
+      "datos_solicitud": "{\"phoneId\":\"ph-4\",\"quantity\":1,\"reason\":\"Daño en exhibición\"}",
+      "estado": "pendiente",
+      "revisado_por": null,
+      "fecha_solicitud": "2026-10-29 11:32:20",
+      "fecha_resolucion": null,
+      "motivo_rechazo": null
+    }
   ]
 }
