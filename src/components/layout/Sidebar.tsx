@@ -1,6 +1,17 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import type { UserRole } from '../../types';
+import {
+  LayoutDashboard,
+  Smartphone,
+  ShoppingCart,
+  Users,
+  TrendingUp,
+  Wallet,
+  Scale,
+  ShieldCheck,
+  Settings
+} from 'lucide-react';
 
 export type NavTab =
   | 'dashboard'
@@ -28,66 +39,72 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
   const navItems: {
     id: NavTab;
     label: string;
-    icon: string;
+    icon: React.ComponentType<{ className?: string }>;
     roles: UserRole[];
     badge?: string;
+    badgeColor?: string;
   }[] = [
     {
       id: 'dashboard',
       label: 'Inicio / Dashboard',
-      icon: '📊',
+      icon: LayoutDashboard,
       roles: ['vendedor', 'admin', 'super_user'],
-      badge: (activeRole === 'admin' || activeRole === 'super_user') && pendingApprovalsCount > 0 ? `${pendingApprovalsCount} Pend.` : undefined
+      badge: (activeRole === 'admin' || activeRole === 'super_user') && pendingApprovalsCount > 0 ? `${pendingApprovalsCount} Pend.` : undefined,
+      badgeColor: 'bg-amber-100 text-amber-800 border border-amber-300'
     },
     {
       id: 'inventory',
       label: 'Inventario de Teléfonos',
-      icon: '📱',
+      icon: Smartphone,
       roles: ['vendedor', 'admin', 'super_user'],
-      badge: lowStockCount > 0 ? `${lowStockCount} Bajo Stock` : undefined
+      badge: lowStockCount > 0 ? `${lowStockCount} Bajo Stock` : undefined,
+      badgeColor: 'bg-rose-100 text-rose-800 border border-rose-300'
     },
     {
       id: 'sales',
       label: 'Registro de Ventas',
-      icon: '💰',
+      icon: ShoppingCart,
       roles: ['vendedor', 'admin', 'super_user']
     },
     {
       id: 'vendors',
-      label: 'Personas (Vendedores / Admin)',
-      icon: '👥',
+      label: 'Personal & Vendedores',
+      icon: Users,
       roles: ['admin', 'super_user']
     },
     {
       id: 'analytics',
-      label: 'Estadísticas del Mercado',
-      icon: '📈',
+      label: 'Estadísticas Mercado',
+      icon: TrendingUp,
       roles: ['vendedor', 'admin', 'super_user']
     },
     {
       id: 'payroll',
-      label: 'Pagos Mensuales Vendedores',
-      icon: '💵',
+      label: 'Pagos & Comisiones',
+      icon: Wallet,
       roles: ['admin', 'super_user'],
-      badge: pendingCount > 0 ? `${pendingCount} Pendientes` : undefined
+      badge: pendingCount > 0 ? `${pendingCount} Pend.` : undefined,
+      badgeColor: 'bg-amber-100 text-amber-800'
     },
     {
       id: 'accounting',
-      label: 'Contabilidad y Finanzas',
-      icon: '🏛️',
-      roles: ['admin', 'super_user']
+      label: 'Contabilidad y Reportes',
+      icon: Scale,
+      roles: ['admin', 'super_user'],
+      badge: '9 Reportes',
+      badgeColor: 'bg-emerald-100 text-emerald-800 border border-emerald-300 font-black'
     },
     {
       id: 'audit',
       label: 'Auditoría del Sistema',
-      icon: '🛡️',
+      icon: ShieldCheck,
       roles: ['super_user'],
       badge: auditLogs.length > 0 ? `${auditLogs.length}` : undefined
     },
     {
       id: 'settings',
       label: 'Configuración / Tasas',
-      icon: '⚙️',
+      icon: Settings,
       roles: ['super_user']
     }
   ];
@@ -95,35 +112,38 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
   const filteredItems = navItems.filter((item) => item.roles.includes(activeRole));
 
   return (
-    <aside className="w-full md:w-60 bg-white border-r border-slate-200 p-3 space-y-4">
+    <aside className="w-full md:w-64 bg-white border-r border-slate-200/80 p-4 space-y-4 shrink-0">
       
-      <div className="p-3 bg-slate-100 rounded-lg border border-slate-200 text-xs">
-        <span className="text-slate-500 font-bold uppercase block text-[10px]">Rol Actual:</span>
-        <span className="font-extrabold text-blue-700 block mt-0.5">
+      {/* Current Active Role Badge */}
+      <div className="p-3 bg-slate-50/80 rounded-2xl border border-slate-200/80 text-xs">
+        <span className="text-slate-400 font-bold uppercase tracking-wider block text-[10px]">Rol Activo:</span>
+        <span className="font-extrabold text-blue-700 block mt-1">
           {activeRole === 'super_user' ? 'Super Usuario (Jefe)' : activeRole === 'admin' ? 'Persona Empresa (Admin)' : 'Vendedor (Persona Natural)'}
         </span>
       </div>
 
-      <nav className="space-y-1">
+      {/* Navigation Buttons */}
+      <nav className="space-y-1.5">
         {filteredItems.map((item) => {
           const isActive = activeTab === item.id;
+          const Icon = item.icon;
           return (
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                 isActive
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-700 hover:bg-slate-100'
+                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                  : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
-              <span className="flex items-center gap-2">
-                <span>{item.icon}</span>
+              <span className="flex items-center gap-2.5">
+                <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-500'}`} />
                 <span>{item.label}</span>
               </span>
               {item.badge && (
-                <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${
-                  isActive ? 'bg-blue-800 text-white' : 'bg-slate-200 text-slate-700'
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                  isActive ? 'bg-blue-800 text-white' : (item.badgeColor || 'bg-slate-100 text-slate-700')
                 }`}>
                   {item.badge}
                 </span>

@@ -1,6 +1,13 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import type { UserRole } from '../../types';
+import {
+  Smartphone,
+  RefreshCw,
+  Bell,
+  Plus,
+  LogOut
+} from 'lucide-react';
 
 interface HeaderProps {
   onOpenNewSale: () => void;
@@ -30,19 +37,26 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNewSale }) => {
         
         {/* Title */}
         <div className="flex items-center gap-3">
-          <span className="text-2xl bg-blue-600/30 p-2 rounded-xl border border-blue-500/30">📱</span>
+          <div className="bg-blue-600/20 p-2.5 rounded-2xl border border-blue-500/30 flex items-center justify-center text-blue-400">
+            <Smartphone className="w-6 h-6 text-blue-400" />
+          </div>
           <div>
-            <h1 className="font-extrabold text-lg leading-tight tracking-tight text-white">TechInventario</h1>
-            <p className="text-xs text-slate-300">Sistema Web de Gestión de Inventario y Ventas (Telecom)</p>
+            <h1 className="font-extrabold text-lg leading-tight tracking-tight text-white flex items-center gap-2">
+              TechInventario
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                IUJO 2026
+              </span>
+            </h1>
+            <p className="text-xs text-slate-400">Sistema Web de Gestión de Inventario, Ventas y Módulos Contables</p>
           </div>
         </div>
 
         {/* Currency Ticker */}
-        <div className="flex flex-wrap items-center gap-2 bg-slate-800/80 p-2 rounded-xl border border-slate-700 text-xs">
+        <div className="flex flex-wrap items-center gap-2 bg-slate-800/80 p-2 rounded-2xl border border-slate-700/80 text-xs">
           <span className="text-slate-400 font-semibold text-[11px] uppercase tracking-wider">Tasa Oficial BCV:</span>
           <button
             onClick={() => updateExchangeRates({ activeRateType: 'bcvUSD' })}
-            className={`px-2.5 py-1 rounded font-bold transition-all ${
+            className={`px-3 py-1 rounded-xl font-bold font-mono transition-all cursor-pointer ${
               exchangeRates.activeRateType === 'bcvUSD' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-300 hover:bg-slate-700'
             }`}
           >
@@ -50,7 +64,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNewSale }) => {
           </button>
           <button
             onClick={() => updateExchangeRates({ activeRateType: 'bcvEUR' })}
-            className={`px-2.5 py-1 rounded font-bold transition-all ${
+            className={`px-3 py-1 rounded-xl font-bold font-mono transition-all cursor-pointer ${
               exchangeRates.activeRateType === 'bcvEUR' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-300 hover:bg-slate-700'
             }`}
           >
@@ -58,10 +72,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNewSale }) => {
           </button>
           <button
             onClick={fetchLiveExchangeRates}
-            className="text-blue-400 hover:text-blue-300 font-semibold text-[11px] ml-1"
-            title="Sincronizar tasa BCV"
+            className="flex items-center gap-1 text-blue-400 hover:text-blue-300 font-semibold text-[11px] ml-1 cursor-pointer"
+            title="Sincronizar tasa BCV oficial"
           >
-            🔄 Actualizar Tasa
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span>Actualizar</span>
           </button>
         </div>
 
@@ -69,22 +84,23 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNewSale }) => {
         <div className="flex flex-wrap items-center gap-2.5">
           
           {(activeRole === 'admin' || activeRole === 'super_user') && pendingApprovalsCount > 0 && (
-            <div className="flex items-center gap-1.5 bg-amber-500/20 border border-amber-500/40 text-amber-300 px-2.5 py-1.5 rounded-lg text-xs font-bold animate-pulse">
-              <span>🔔</span>
-              <span>{pendingApprovalsCount} {pendingApprovalsCount === 1 ? 'decisión pendiente' : 'decisiones pendientes'}</span>
+            <div className="flex items-center gap-1.5 bg-amber-500/20 border border-amber-500/40 text-amber-300 px-3 py-1.5 rounded-xl text-xs font-bold animate-pulse">
+              <Bell className="w-3.5 h-3.5" />
+              <span>{pendingApprovalsCount} {pendingApprovalsCount === 1 ? 'decisión' : 'decisiones'}</span>
             </div>
           )}
 
           <button
             onClick={onOpenNewSale}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-lg shadow-sm transition-colors"
+            className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs transition-colors cursor-pointer"
           >
-            + Nueva Venta
+            <Plus className="w-4 h-4" />
+            <span>Nueva Venta</span>
           </button>
 
           {/* Logged in User Badge & Role Selector */}
-          <div className="flex items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-xs">
-            <div className="w-6 h-6 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-[11px]">
+          <div className="flex items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-xl text-xs">
+            <div className="w-7 h-7 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs">
               {currentUser ? currentUser.name.charAt(0) : 'U'}
             </div>
             <div>
@@ -97,7 +113,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNewSale }) => {
             <select
               value={activeRole}
               onChange={handleRoleChange}
-              className="bg-slate-950 text-white text-[11px] font-bold px-2 py-0.5 rounded outline-none cursor-pointer border border-slate-700 hover:border-slate-500 ml-1"
+              className="bg-slate-950 text-white text-[11px] font-bold px-2.5 py-1 rounded-lg outline-none cursor-pointer border border-slate-700 hover:border-slate-500 ml-1"
               title="Cambiar vista de rol"
             >
               <option value="super_user">Super Usuario</option>
@@ -109,10 +125,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNewSale }) => {
           {/* Logout Button */}
           <button
             onClick={logout}
-            className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-bold border border-slate-700 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl text-xs font-bold border border-slate-700 transition-colors cursor-pointer"
             title="Cerrar sesión"
           >
-            🚪 Salir
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Salir</span>
           </button>
 
         </div>
