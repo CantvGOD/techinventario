@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 
-const OUTPUT_DIR = path.join(__dirname, 'Capturas_TechInventario_IUJO');
+const OUTPUT_DIR = path.join(__dirname, 'Capturas_TechInventario');
 const UI_DIR = path.join(OUTPUT_DIR, '01_Pantallas_Sistema');
 const CODE_DIR = path.join(OUTPUT_DIR, '02_Codigo_Fuente_Clave');
 
@@ -94,7 +94,7 @@ async function renderCodeToImage(browser, title, filename, codeContent) {
         <div class="header">
           <div class="dots"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
           <div class="title">${title}</div>
-          <div class="badge">TechInventario (IUJO)</div>
+          <div class="badge">TechInventario Enterprise</div>
         </div>
         <div class="content"><table>${formattedLines}</table></div>
         <div class="footer">
@@ -454,7 +454,7 @@ if (costMethodApplied === 'promedio_ponderado') {
 const newCostBs = Number((newCostUSD * rateUSD).toFixed(2));
 const finalPriceBs = parseFloat(newPriceBs) || oldPriceBs;
 
-// VALIDACIÓN DE LA REGLA FUNDAMENTAL DE LA PROFESORA:
+// VALIDACIÓN DE LA REGLA FUNDAMENTAL DE CONTROL DE REPOSICIÓN:
 if (finalPriceBs <= newCostBs) {
   return res.status(400).json({
     error: \`Regla de Negocio: El precio de venta (Bs. \${finalPriceBs.toLocaleString('es-VE')}) \` +
@@ -473,7 +473,7 @@ const profitMargin = Number((((finalPriceBs - newCostBs) / newCostBs) * 100).toF
     code1
   );
 
-  const code2 = `// Métodos Contables de Valuación de Inventario (IUJO)
+  const code2 = `// Métodos Contables de Valuación de Inventario Empresarial
 // Archivo: src/context/AppContext.tsx
 
 const registerStockArrival = async (data: {
@@ -589,7 +589,7 @@ app.post('/api/sales', async (req, res) => {
     code4
   );
 
-  const code5 = `-- Esquema Relacional MariaDB / MySQL - Sistema TechInventario (IUJO)
+  const code5 = `-- Esquema Relacional MariaDB / MySQL - Sistema TechInventario Enterprise
 -- Archivo: database.sql
 
 CREATE TABLE telefonos (

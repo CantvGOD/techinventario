@@ -1,6 +1,6 @@
 -- =====================================================
 -- DATABASE SCHEMA & EXTENSIVE SAMPLE DATA FOR TECHINVENTARIO
--- MySQL / MariaDB Database for Telefonía & Tecnología (IUJO Contable)
+-- MySQL / MariaDB Database for Telefonía & Tecnología (Contable Empresarial)
 -- =====================================================
 
 CREATE DATABASE IF NOT EXISTS `techinventario_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

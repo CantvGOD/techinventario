@@ -1,6 +1,6 @@
 # 📱 TechInventario — Sistema Web de Gestión de Inventario y Ventas (Telecom)
 
-> **Proyecto Académico — Instituto Universitario de Jesús Obrero (IUJO)**  
+> **Sistema Empresarial — Solución Integral de Telecomunicaciones y Telefonía Móvil**  
 > Sistema integral de facturación, valuación de inventario con costo de reposición, estados financieros y control tributario venezolano.
 
 ---
@@ -52,7 +52,7 @@ chmod +x start.sh
 * **IGTF (3%)**: Recargo del 3% aplicado estrictamente a pagos realizados en efectivo en moneda extranjera (`Efectivo Divisas (USD)`).
 * **Control Anti-Fraude**: Validación de unicidad de referencias bancarias (Pago Móvil / Transferencias / Zelle) para impedir comprobantes duplicados.
 
-### 3. Módulo de Contabilidad y Finanzas (IUJO)
+### 3. Módulo de Contabilidad y Finanzas Empresariales
 * **Estado de Resultados**: Ventas netas, Costo de Ventas (CMV), Utilidad Bruta, Gastos Operativos y Utilidad Neta.
 * **Balance General**: Verificación de ecuación contable en tiempo real ($\text{Activo} = \text{Pasivo} + \text{Patrimonio}$).
 * **Gastos Operativos**: Registro clasificado de egresos (alquiler, nómina, electricidad, telecomunicaciones).
@@ -67,4 +67,4 @@ chmod +x start.sh
 
 ## 📸 Evidencia y Capturas del Sistema
 
-En la carpeta `Capturas_TechInventario_IUJO/` se incluyen 22 capturas de todas las interfaces del sistema y 6 capturas de código fuente en alta resolución con su archivo explicativo `LEEME_INDICE_CAPTURAS.txt`.
+En la carpeta `Capturas_TechInventario/` se incluyen 22 capturas de todas las interfaces del sistema y 6 capturas de código fuente en alta resolución con su archivo explicativo `LEEME_INDICE_CAPTURAS.txt`.

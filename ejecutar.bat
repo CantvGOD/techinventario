@@ -1,10 +1,10 @@
 @echo off
-title TechInventario - Sistema Telecom con MySQL y Modo Autonomo - IUJO
+title TechInventario - Sistema Telecom con MySQL y Modo Autonomo
 cls
 
 echo ===============================================================================
 echo   TECHINVENTARIO - SISTEMA DE GESTION DE INVENTARIO Y VENTAS - TELECOM
-echo   Instituto Universitario de Jesus Obrero - IUJO
+echo   Solucion Empresarial de Gestion y Facturacion
 echo ===============================================================================
 echo.
 echo   [Iniciando verificacion de entorno e instalacion desatendida...]

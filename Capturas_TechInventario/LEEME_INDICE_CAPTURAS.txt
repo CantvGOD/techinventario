@@ -1,11 +1,11 @@
 ================================================================================
   TECHINVENTARIO - SISTEMA DE GESTIÓN DE INVENTARIO Y VENTAS (TELECOM)
-  INSTITUTO UNIVERSITARIO DE JESÚS OBRERO (IUJO)
+  SOLUCIÓN EMPRESARIAL PARA EMPRESAS DE TELECOMUNICACIONES Y TECNOLOGÍA
   ÍNDICE Y DESCRIPCIÓN DE CAPTURAS DE PANTALLA Y CÓDIGO FUENTE
 ================================================================================
 
 Este paquete contiene la evidencia visual completa del funcionamiento del sistema
-y fragmentos clave de código fuente para el informe académico y evaluación.
+y fragmentos clave de código fuente para el auditoría técnica y documentación del sistema.
 
 --------------------------------------------------------------------------------
 CARPETA 01: PANTALLAS DEL SISTEMA (01_Pantallas_Sistema/)
@@ -73,7 +73,7 @@ CARPETA 01: PANTALLAS DEL SISTEMA (01_Pantallas_Sistema/)
      basada en las ventas efectivas registradas en el período.
 
 15_Contabilidad_Estado_Resultados.png
-   - Módulo Contable (IUJO) - Pestaña 1: Estado de Rendimiento Financiero
+   - Módulo Contable Empresarial - Pestaña 1: Estado de Rendimiento Financiero
      (Ingresos brutos por ventas, Costo de Ventas según valuación, Utilidad Bruta,
      Gastos Operativos y Utilidad Operativa Neta).
 

@@ -44,7 +44,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNewSale }) => {
             <h1 className="font-extrabold text-lg leading-tight tracking-tight text-white flex items-center gap-2">
               TechInventario
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                IUJO 2026
+                v2.5 Enterprise
               </span>
             </h1>
             <p className="text-xs text-slate-400">Sistema Web de Gestión de Inventario, Ventas y Módulos Contables</p>

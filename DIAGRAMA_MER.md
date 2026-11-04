@@ -1,6 +1,6 @@
 # 🏛️ Modelo Entidad - Relación (MER / DER) — TechInventario
 
-**Instituto Universitario de Jesús Obrero (IUJO)**  
+**Sistema de Gestión Empresarial Telecom C.A.**  
 **Base de Datos Relacional:** `techinventario_db` (MySQL / MariaDB)
 
 Este documento contiene la especificación formal del **Modelo Entidad - Relación (MER)** y el **Diagrama Entidad - Relación (DER)** del sistema, diseñado conforme al estándar de **phpMyAdmin Designer**.
@@ -10,8 +10,8 @@ Este documento contiene la especificación formal del **Modelo Entidad - Relaci�
 ## 🖼️ Diagrama Visual (phpMyAdmin Designer)
 
 El archivo de imagen en alta resolución se encuentra en:
-* `MER_TechInventario_IUJO.png` (en la raíz del proyecto y en tu carpeta de Descargas)
-* `Capturas_TechInventario_IUJO/03_Diagrama_MER_Base_Datos.png`
+* `MER_TechInventario.png` (en la raíz del proyecto y en tu carpeta de Descargas)
+* `Capturas_TechInventario/03_Diagrama_MER_Base_Datos.png`
 
 ---
 

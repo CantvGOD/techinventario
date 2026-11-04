@@ -192,7 +192,7 @@ async function generateMER() {
   <!-- Watermark Header -->
   <div class="title-banner">
     <h1>DIAGRAMA MODELO ENTIDAD - RELACIÓN (MER) — phpMyAdmin Designer</h1>
-    <p>Base de Datos: techinventario_db | IUJO — Sistema Web Telecom</p>
+    <p>Base de Datos: techinventario_db | TechInventario Enterprise Telecom C.A.</p>
   </div>
 
   <!-- SVG for Connections -->
@@ -440,10 +440,10 @@ async function generateMER() {
   await page.setContent(html, { waitUntil: 'load' });
   await new Promise(r => setTimeout(r, 600));
 
-  const outputPath1 = '/home/cantvgod/antigravity/serene-planck/MER_TechInventario_IUJO.png';
-  const outputPath2 = '/home/cantvgod/Descargas/MER_TechInventario_IUJO.png';
-  const outputPath3 = '/home/cantvgod/antigravity/serene-planck/Capturas_TechInventario_IUJO/01_Pantallas_Sistema/23_Diagrama_MER_Base_Datos_phpMyAdmin.png';
-  const outputPath4 = '/home/cantvgod/antigravity/serene-planck/Capturas_TechInventario_IUJO/03_Diagrama_MER_Base_Datos.png';
+  const outputPath1 = '/home/cantvgod/antigravity/serene-planck/MER_TechInventario.png';
+  const outputPath2 = '/home/cantvgod/Descargas/MER_TechInventario.png';
+  const outputPath3 = '/home/cantvgod/antigravity/serene-planck/Capturas_TechInventario/01_Pantallas_Sistema/23_Diagrama_MER_Base_Datos_phpMyAdmin.png';
+  const outputPath4 = '/home/cantvgod/antigravity/serene-planck/Capturas_TechInventario/03_Diagrama_MER_Base_Datos.png';
 
   await page.screenshot({ path: outputPath1, fullPage: true });
   fs.copyFileSync(outputPath1, outputPath2);

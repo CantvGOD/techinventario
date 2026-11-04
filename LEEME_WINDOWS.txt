@@ -1,6 +1,6 @@
 ================================================================================
   TECHINVENTARIO - SISTEMA DE GESTIÓN DE INVENTARIO Y VENTAS (TELECOM)
-  INSTITUTO UNIVERSITARIO DE JESÚS OBRERO (IUJO)
+  SOLUCIÓN EMPRESARIAL PARA EMPRESAS DE TELECOMUNICACIONES Y TECNOLOGÍA
   GUÍA RÁPIDA DE INSTALACIÓN Y EJECUCIÓN EN WINDOWS (100% FUNCIONAL)
 ================================================================================
 
@@ -31,7 +31,7 @@ El sistema cuenta con un motor inteligente con soporte dual:
 A) CON MYSQL / XAMPP / MARIADB:
    Si el equipo tiene MySQL (ejemplo: XAMPP en C:\xampp o MySQL Workbench),
    el script importa automáticamente el archivo `database.sql` con todas las
-   tablas y datos iniciales requeridos para la defensa universitaria.
+   tablas y datos iniciales requeridos para la puesta en marcha del sistema.
 
 B) SIN MYSQL (INSTALACIÓN LIMPIA):
    Si la computadora de tu amigo no tiene MySQL instalado, NO TE PREOCUPES:
@@ -43,7 +43,7 @@ B) SIN MYSQL (INSTALACIÓN LIMPIA):
    se guardan y persisten de manera idéntica!
 
 --------------------------------------------------------------------------------
-3. USUARIOS Y CREDENCIALES PREDEFINIDAS PARA LA PRESENTACIÓN
+3. USUARIOS Y CREDENCIALES PREDEFINIDAS 
 --------------------------------------------------------------------------------
 Puedes ingresar seleccionando el usuario en el menú desplegable de la pantalla
 de inicio de sesión, o escribiendo:

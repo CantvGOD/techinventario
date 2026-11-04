@@ -88,7 +88,7 @@ export const FinancialAccounting: React.FC = () => {
         </div>
         <h2 className="text-lg font-black text-slate-900">Módulo Contable y Reportes Restringido</h2>
         <p className="text-xs text-slate-500 leading-relaxed">
-          El acceso a los Estados Financieros, Balance General, Reportes Gerenciales y Cierres de Turno está reservado exclusivamente para la Dirección General y Administradores de TechInventario (IUJO).
+          El acceso a los Estados Financieros, Balance General, Reportes Gerenciales y Cierres de Turno está reservado exclusivamente para la Dirección General y Administradores de TechInventario.
         </p>
       </div>
     );
@@ -286,7 +286,7 @@ export const FinancialAccounting: React.FC = () => {
         <div>
           <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2.5">
             <Building2 className="w-7 h-7 text-blue-600" />
-            Centro de Reportes y Módulo Contable (IUJO)
+            Centro de Reportes y Módulo Contable Empresarial
           </h1>
           <p className="text-xs text-slate-500 mt-1">
             Sistema integral de reportería contable, operativa y de supervisión con soporte multimoneda y cálculo de impuestos.
@@ -464,7 +464,7 @@ export const FinancialAccounting: React.FC = () => {
       {/* Institutional Document Header (Visible always, optimized for print) */}
       <div className="hidden print:block text-center border-b-2 border-slate-900 pb-3 mb-4 space-y-1">
         <h2 className="text-xs font-extrabold text-slate-800 uppercase tracking-wider">
-          Instituto Universitario Jesús Obrero (IUJO) • Cátedra de Contabilidad
+          TechInventario Telecom C.A. • Gerencia de Administración y Finanzas
         </h2>
         <h1 className="text-lg font-black text-slate-950">
           TechInventario C.A. — Sistema Integrado de Gestión Financiera y Telecom
