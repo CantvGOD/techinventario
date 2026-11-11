@@ -18,8 +18,7 @@ import {
   Eye,
   EyeOff,
   AlertCircle,
-  KeyRound,
-  Info
+  KeyRound
 } from 'lucide-react';
 
 export const LoginView: React.FC = () => {
@@ -262,33 +261,7 @@ export const LoginView: React.FC = () => {
                 </button>
               </form>
 
-              {/* Guía informativa de credenciales registradas (Solo informativa, no autocompleta) */}
-              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80 space-y-2 text-xs">
-                <div className="flex items-center gap-1.5 text-slate-700 font-bold">
-                  <Info className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>Credenciales Registradas de la Empresa:</span>
-                </div>
-                <div className="space-y-1.5 text-[11px] text-slate-600 font-mono">
-                  <div className="flex justify-between items-center bg-white p-1.5 rounded-lg border border-slate-200/60">
-                    <div>
-                      <strong className="text-purple-700 font-sans">Super Usuario:</strong> jefe@empresa.com
-                    </div>
-                    <span className="text-slate-400">Clave: 123</span>
-                  </div>
-                  <div className="flex justify-between items-center bg-white p-1.5 rounded-lg border border-slate-200/60">
-                    <div>
-                      <strong className="text-blue-700 font-sans">Administrador:</strong> admin@empresa.com
-                    </div>
-                    <span className="text-slate-400">Clave: 123</span>
-                  </div>
-                  <div className="flex justify-between items-center bg-white p-1.5 rounded-lg border border-slate-200/60">
-                    <div>
-                      <strong className="text-emerald-700 font-sans">Vendedor:</strong> carlos@empresa.com
-                    </div>
-                    <span className="text-slate-400">Clave: 123</span>
-                  </div>
-                </div>
-              </div>
+
 
             </div>
           ) : (
