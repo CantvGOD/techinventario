@@ -238,6 +238,17 @@ const DEFAULT_USERS: User[] = [
     password: '123'
   },
   {
+    id: 'usr-carlos',
+    name: 'Carlos Natural',
+    email: 'carlos@empresa.com',
+    role: 'vendedor',
+    phone: '0412-5556677',
+    ci: 'V-26.890.123',
+    joinDate: '2024-03-01',
+    monthlyTargetBs: 200000,
+    password: '123'
+  },
+  {
     id: 'usr-4',
     name: 'Juan Pérez',
     email: 'juan.perez@empresa.com',
@@ -520,8 +531,8 @@ const DEFAULT_APPROVALS: ApprovalRequest[] = [
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(DEFAULT_USERS[0]);
-  const [activeRole, setActiveRoleState] = useState<UserRole>('super_user');
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const activeRole: UserRole = currentUser ? currentUser.role : 'vendedor';
   const [darkMode, setDarkModeState] = useState<boolean>(false);
 
   const [users, setUsers] = useState<User[]>(DEFAULT_USERS);
@@ -626,45 +637,81 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     refreshFromMySQL();
   }, []);
 
-  const login = (email: string, _password?: string): boolean => {
+  const login = (email: string, password?: string): boolean => {
     const cleanEmail = email.trim().toLowerCase();
-    
-    // Find user by email, name, or role alias
-    let foundUser = users.find(u => 
-      u.email.toLowerCase() === cleanEmail ||
-      u.name.toLowerCase().includes(cleanEmail) ||
-      (cleanEmail.includes('jefe') && u.role === 'super_user') ||
-      (cleanEmail.includes('admin') && u.role === 'admin') ||
-      (cleanEmail.includes('vendedor') && u.role === 'vendedor')
+    const cleanPassword = (password || '').trim();
+
+    if (!cleanEmail) {
+      addToast({
+        type: 'error',
+        title: 'Correo Requerido',
+        message: 'Debe ingresar su correo electrónico para iniciar sesión.'
+      });
+      return false;
+    }
+
+    if (!cleanPassword) {
+      addToast({
+        type: 'error',
+        title: 'Contraseña Requerida',
+        message: 'Debe ingresar su contraseña de acceso obligatoriamente.'
+      });
+      return false;
+    }
+
+    // Buscar usuario registrado estrictamente
+    const foundUser = users.find(u => 
+      u.email.toLowerCase() === cleanEmail
     );
 
     if (!foundUser) {
-      // Dynamic fallback so login NEVER fails
-      foundUser = {
-        id: 'usr-' + Math.random().toString(36).substring(2, 9),
-        name: email.includes('@') ? email.split('@')[0] : email,
-        email: email.includes('@') ? email : `${cleanEmail}@empresa.com`,
-        role: cleanEmail.includes('jefe') ? 'super_user' : cleanEmail.includes('admin') ? 'admin' : 'vendedor',
-        joinDate: new Date().toISOString().split('T')[0],
-        ci: 'V-20.123.456',
-        password: '123'
-      };
-      setUsers(prev => [...prev, foundUser!]);
+      addToast({
+        type: 'error',
+        title: 'Usuario no encontrado',
+        message: 'No existe ningún usuario registrado con el correo ingresado.'
+      });
+      logAuditAction(
+        cleanEmail,
+        'vendedor',
+        'Intento Fallido de Inicio de Sesión',
+        `Intento de acceso con correo no registrado: ${cleanEmail}`,
+        'auth',
+        'warning'
+      );
+      return false;
+    }
+
+    // Validar contraseña
+    const expectedPassword = foundUser.password || '123';
+    if (cleanPassword !== expectedPassword) {
+      addToast({
+        type: 'error',
+        title: 'Contraseña Incorrecta',
+        message: 'La contraseña ingresada no es válida para este usuario.'
+      });
+      logAuditAction(
+        foundUser.name,
+        foundUser.role,
+        'Contraseña Errónea',
+        `Intento de inicio de sesión con contraseña errónea para ${foundUser.email}`,
+        'auth',
+        'warning'
+      );
+      return false;
     }
 
     setCurrentUser(foundUser);
-    setActiveRoleState(foundUser.role);
     addToast({
       type: 'success',
       title: '¡Bienvenido!',
-      message: `Sesión iniciada como ${foundUser.name} (${foundUser.role === 'super_user' ? 'Super Usuario' : foundUser.role === 'admin' ? 'Administrador' : 'Vendedor'})`
+      message: `Sesión iniciada correctamente como ${foundUser.name} (${foundUser.role === 'super_user' ? 'Super Usuario' : foundUser.role === 'admin' ? 'Administrador' : 'Vendedor'})`
     });
 
     logAuditAction(
       foundUser.name,
       foundUser.role,
       'Inicio de Sesión Exitoso',
-      `El usuario ${foundUser.name} (${foundUser.email}) ha iniciado sesión con rol de ${foundUser.role}`,
+      `El usuario ${foundUser.name} (${foundUser.email}) ha iniciado sesión con rol de ${foundUser.role}.`,
       'auth',
       'success'
     );
@@ -695,15 +742,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     setUsers(prev => [...prev.filter(u => u.email.toLowerCase() !== userData.email.toLowerCase()), newUser]);
     setCurrentUser(newUser);
-    setActiveRoleState(newUser.role);
 
     fetch(`${API_BASE}/users`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...userData, currentUser })
+      body: JSON.stringify({ ...userData, currentUser: newUser })
     }).catch(() => {});
 
-    addToast({ type: 'success', title: 'Cuenta Creada', message: `¡Bienvenido ${newUser.name}! Tu cuenta ha sido registrada.` });
+    addToast({ type: 'success', title: 'Cuenta Creada', message: `¡Bienvenido ${newUser.name}! Tu cuenta ha sido registrada e iniciaste sesión.` });
 
     logAuditAction(
       newUser.name,
@@ -716,26 +762,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return true;
   };
 
-  const setActiveRole = (role: UserRole) => {
-    const oldRole = activeRole;
-    setActiveRoleState(role);
-    if (currentUser) {
-      setCurrentUser({ ...currentUser, role });
-    }
+  const setActiveRole = (_role: UserRole) => {
     addToast({
-      type: 'info',
-      title: 'Rol de vista actualizado',
-      message: `Modo vista cambiado a ${role === 'super_user' ? 'Super Usuario (Jefe)' : role === 'admin' ? 'Administrador' : 'Vendedor'}`
+      type: 'warning',
+      title: 'Cambio de Rol Deshabilitado',
+      message: 'No está permitido cambiar de roles en caliente. Para cambiar de rol debe cerrar sesión e iniciar con las credenciales de dicho perfil.'
     });
-
-    logAuditAction(
-      currentUser ? currentUser.name : 'Usuario',
-      role,
-      'Cambio de Rol Activo',
-      `Se cambió el rol de visualización de ${oldRole} a ${role}`,
-      'navigation',
-      'info'
-    );
   };
 
   const setDarkMode = setDarkModeState;

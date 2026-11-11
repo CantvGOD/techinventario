@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import type { UserRole } from '../../types';
+
 import {
   Smartphone,
   RefreshCw,
@@ -18,7 +18,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNewSale }) => {
     currentUser,
     logout,
     activeRole,
-    setActiveRole,
     exchangeRates,
     fetchLiveExchangeRates,
     updateExchangeRates,
@@ -26,10 +25,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNewSale }) => {
   } = useApp();
 
   const pendingApprovalsCount = approvals.filter(a => a.status === 'pendiente').length;
-
-  const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setActiveRole(e.target.value as UserRole);
-  };
 
   return (
     <header className="w-full bg-slate-900 text-white border-b border-slate-800 p-3.5 sm:px-6 shadow-md">
@@ -98,28 +93,23 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNewSale }) => {
             <span>Nueva Venta</span>
           </button>
 
-          {/* Logged in User Badge & Role Selector */}
-          <div className="flex items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-xl text-xs">
-            <div className="w-7 h-7 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs">
-              {currentUser ? currentUser.name.charAt(0) : 'U'}
+          {/* Logged in User Profile (Perfil con Rol Fijo - Sin Cambio en Caliente) */}
+          <div className="flex items-center gap-2.5 bg-slate-800/90 border border-slate-700/80 px-3.5 py-1.5 rounded-xl text-xs">
+            <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-xs">
+              {currentUser ? currentUser.name.charAt(0).toUpperCase() : 'U'}
             </div>
             <div>
               <p className="font-bold text-white leading-none text-xs">{currentUser?.name || 'Usuario'}</p>
-              <p className="text-[10px] text-slate-400 font-medium">
+              <span className={`inline-block text-[10px] font-extrabold px-1.5 py-0.5 rounded-md mt-0.5 ${
+                activeRole === 'super_user'
+                  ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                  : activeRole === 'admin'
+                  ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                  : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+              }`}>
                 {activeRole === 'super_user' ? 'Super Usuario' : activeRole === 'admin' ? 'Administrador' : 'Vendedor'}
-              </p>
+              </span>
             </div>
-
-            <select
-              value={activeRole}
-              onChange={handleRoleChange}
-              className="bg-slate-950 text-white text-[11px] font-bold px-2.5 py-1 rounded-lg outline-none cursor-pointer border border-slate-700 hover:border-slate-500 ml-1"
-              title="Cambiar vista de rol"
-            >
-              <option value="super_user">Super Usuario</option>
-              <option value="admin">Administrador</option>
-              <option value="vendedor">Vendedor</option>
-            </select>
           </div>
 
           {/* Logout Button */}
